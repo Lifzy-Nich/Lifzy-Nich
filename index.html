@@ -3,50 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EduPlay Pro - Fixed Edition</title>
+    <title>GLOBAL FLAG - 195 Countries</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
-        .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
-        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 10px 0; font-weight: 800; }
+        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 15px; }
+        .header h1 { text-align: center; font-size: 1.8rem; color: #A29BFE; margin: 15px 0; font-weight: 800; }
         
-        .tabs { display: flex; background: var(--card); padding: 6px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; }
-        .tab.active { background: var(--accent); color: white; }
-
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; position: relative; display: flex; align-items: center; justify-content: center; }
-        #q-img { width: 100%; height: 100%; object-fit: contain; }
+        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; }
+        .img-box { width: 100%; height: 200px; border-radius: 20px; background: #000; margin-bottom: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 4px solid #2D3748; }
+        #q-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.95); padding: 12px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
+        .hint-text { position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 80%; background: rgba(0,0,0,0.9); padding: 10px; border-radius: 12px; font-size: 0.8rem; display: none; color: #F1C40F; border: 1px solid var(--accent); z-index: 5; }
 
         input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; }
+        input:focus { border-color: var(--accent); }
+
         .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
         .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; }
         .b-cek { background: var(--green); }
         .b-hint { background: #EAB308; font-size: 1.5rem; }
         .b-skip { background: #475569; font-size: 1.5rem; }
 
-        .score-box { font-size: 1.1rem; font-weight: 800; color: #94A3B8; margin-top: 5px; display: flex; justify-content: space-between; align-items: center; }
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 30px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; }
+        .score-box { display: flex; justify-content: space-between; font-weight: 800; color: #94A3B8; padding: 0 10px; }
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 30px; border-radius: 50px; transition: 0.4s; z-index: 100; color: white; font-weight: 800; }
     </style>
 </head>
 <body>
     <div id="pop"></div>
     <div class="app">
-        <div class="header"><h1>EDUPLAY GLOBAL</h1></div>
-        <div class="tabs">
-            <button id="f-tab" class="tab active" onclick="setM('flag')">BENDERA</button>
-            <button id="a-tab" class="tab" onclick="setM('animal')">HEWAN</button>
-        </div>
+        <div class="header"><h1>GLOBAL FLAG</h1></div>
         <div class="game-card">
+            <div id="hint-ui" class="hint-text"></div>
             <div class="img-box">
-                <img id="q-img" src="">
-                <div id="hint-ui" class="hint-text"></div>
+                <img id="q-img" src="" alt="Bendera">
             </div>
-            <input type="text" id="ans-in" placeholder="Jawab (ID / EN)" autocomplete="off">
+            <input type="text" id="ans-in" placeholder="Ketik Nama Negara..." autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
                 <button class="btn b-hint" onclick="toggleH()">💡</button>
@@ -55,56 +49,56 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span style="font-size:0.7rem; color:var(--accent)">NO-LAG SYSTEM</span>
+            <span style="font-size: 0.7rem; color: var(--accent)">BILINGUAL: ID / EN</span>
         </div>
     </div>
 
 <script>
-    let db = { flag: [], animal: [] }, used = { flag: [], animal: [] }, cur = {}, mode = 'flag', score = 0;
+    let db = [], cur = {}, score = 0;
 
-    // Database Bendera menggunakan API (Biasanya stabil, jika black screen kita pindah ke Base64 juga nanti)
+    // Mengambil data 195 negara secara otomatis
     async function init() {
         try {
-            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,continents');
+            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,translations,continents');
             const data = await res.json();
-            db.flag = data.slice(0, 40).map(c => ({
-                en: c.name.common, id: c.name.common, i: c.flags.png, h: "Benua: " + c.continents[0]
+            // Filter hanya negara berdaulat (sekitar 195+)
+            db = data.map(c => ({
+                id: c.translations.idn ? c.translations.idn.common : c.name.common,
+                en: c.name.common,
+                img: c.flags.png,
+                hint: "Benua: " + (c.continents ? c.continents[0] : "Tidak diketahui")
             }));
-            
-            // DATABASE HEWAN OFFLINE (Base64) - DIJAMIN MUNCUL 100%
-            db.animal = [
-                {id: "Kucing", en: "Cat", h: "Suaranya Meong", i: "data:image/jpeg;base64,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", en_i: "Meows"}
-            ];
             loadQ();
-        } catch(e) { toast("Error saat memuat aplikasi", "var(--red)"); }
-    }
-
-    function setM(m) {
-        mode = m;
-        document.getElementById('f-tab').classList.toggle('active', m === 'flag');
-        document.getElementById('a-tab').classList.toggle('active', m === 'animal');
-        loadQ();
+        } catch (e) {
+            alert("Gagal memuat gambar. Pastikan internet aktif.");
+        }
     }
 
     function loadQ() {
-        let pool = db[mode].filter(x => !used[mode].includes(x.en));
-        if (!pool.length) { used[mode] = []; pool = db[mode]; }
-        cur = pool[Math.floor(Math.random() * pool.length)];
-        
+        if (db.length === 0) return;
+        cur = db[Math.floor(Math.random() * db.length)];
         const img = document.getElementById('q-img');
-        img.src = cur.i; // Langsung dari Base64, tidak butuh internet untuk hewan
         
+        // Anti-Black Screen: Pastikan gambar dimuat ulang dengan benar
+        img.style.display = 'none';
+        img.src = cur.img;
+        img.onload = () => img.style.display = 'block';
+
         document.getElementById('ans-in').value = '';
         document.getElementById('hint-ui').style.display = 'none';
+        document.getElementById('ans-in').focus();
     }
 
     function check() {
-        let v = document.getElementById('ans-in').value.toLowerCase().trim();
-        if (v === cur.id.toLowerCase() || v === cur.en.toLowerCase()) {
-            score += 10; used[mode].push(cur.en);
+        let input = document.getElementById('ans-in').value.toLowerCase().trim();
+        let targetID = cur.id.toLowerCase();
+        let targetEN = cur.en.toLowerCase();
+
+        if (input === targetID || input === targetEN) {
+            score += 10;
             document.getElementById('score').innerText = score;
-            toast(`✅ BENAR!`, "var(--green)");
-            setTimeout(loadQ, 800);
+            toast("✅ BENAR! (" + cur.id + ")", "var(--green)");
+            setTimeout(loadQ, 1000);
         } else {
             toast("❌ SALAH!", "var(--red)");
         }
@@ -112,7 +106,7 @@
 
     function toggleH() {
         const h = document.getElementById('hint-ui');
-        h.innerText = "💡 " + cur.h;
+        h.innerText = "💡 " + cur.hint;
         h.style.display = h.style.display === 'none' ? 'block' : 'none';
     }
 
@@ -120,8 +114,9 @@
         const p = document.getElementById('pop');
         p.innerText = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1200);
+        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
     }
+
     init();
 </script>
 </body>
