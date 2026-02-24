@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG - No Repeat System</title>
+    <title>GLOBAL FLAG - 195+ Countries</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
@@ -15,8 +15,11 @@
         .game-card { background: var(--card); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
         .img-box { width: 100%; height: 210px; border-radius: 20px; background: #000; margin-bottom: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
-        #q-img { max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)); }
+        #q-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)); }
         
+        .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         .hint-container { min-height: 70px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
         .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
@@ -42,12 +45,15 @@
     <div class="app">
         <div class="header"><h1>GLOBAL FLAG</h1></div>
         <div class="game-card">
-            <div class="img-box"><img id="q-img" src="" alt="Bendera"></div>
+            <div class="img-box">
+                <div id="loader" class="loader"></div>
+                <img id="q-img" src="" alt="Bendera">
+            </div>
             <div class="hint-container">
                 <div id="h-continent" class="hint-text"></div>
                 <div id="h-capital" class="hint-text" style="border-color: #EAB308; color: #EAB308;"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="Ketik Nama Negara..." autocomplete="off">
+            <input type="text" id="ans-in" placeholder="Memuat data..." disabled autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
                 <button class="btn b-hint" onclick="toggleH()">💡</button>
@@ -56,48 +62,64 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span id="remaining" class="status-tag">SISA: 0</span>
+            <span id="remaining" class="status-tag">MEMUAT...</span>
         </div>
     </div>
 
 <script>
-    const allCountries = [
-        {id: ["indonesia"], en: ["indonesia"], code: "id", cont: "Asia", cap: "Jakarta"},
-        {id: ["jepang"], en: ["japan"], code: "jp", cont: "Asia", cap: "Tokyo"},
-        {id: ["palestina", "palestine"], en: ["palestine"], code: "ps", cont: "Asia", cap: "Ramallah"},
-        {id: ["jerman"], en: ["germany"], code: "de", cont: "Eropa", cap: "Berlin"},
-        {id: ["prancis", "perancis"], en: ["france"], code: "fr", cont: "Eropa", cap: "Paris"},
-        {id: ["amerika serikat", "amerika", "as"], en: ["usa", "united states", "america"], code: "us", cont: "Amerika Utara", cap: "Washington D.C."},
-        {id: ["brasil", "brazil"], en: ["brazil"], code: "br", cont: "Amerika Selatan", cap: "Brasilia"},
-        {id: ["inggris"], en: ["uk", "england"], code: "gb", cont: "Eropa", cap: "London"},
-        {id: ["korea selatan"], en: ["south korea"], code: "kr", cont: "Asia", cap: "Seoul"},
-        {id: ["arab saudi"], en: ["saudi arabia"], code: "sa", cont: "Asia", cap: "Riyadh"},
-        {id: ["mesir"], en: ["egypt"], code: "eg", cont: "Afrika", cap: "Kairo"},
-        {id: ["australia"], en: ["australia"], code: "au", cont: "Oseania", cap: "Canberra"},
-        {id: ["italia"], en: ["italy"], code: "it", cont: "Eropa", cap: "Roma"},
-        {id: ["spanyol"], en: ["spain"], code: "es", cont: "Eropa", cap: "Madrid"},
-        {id: ["rusia"], en: ["russia"], code: "ru", cont: "Asia/Eropa", cap: "Moskow"},
-        {id: ["kanada"], en: ["canada"], code: "ca", cont: "Amerika Utara", cap: "Ottawa"},
-        {id: ["india"], en: ["india"], code: "in", cont: "Asia", cap: "New Delhi"},
-        {id: ["turki"], en: ["turkey"], code: "tr", cont: "Asia/Eropa", cap: "Ankara"},
-        {id: ["belanda"], en: ["netherlands"], code: "nl", cont: "Eropa", cap: "Amsterdam"},
-        {id: ["thailand"], en: ["thailand"], code: "th", cont: "Asia", cap: "Bangkok"}
-    ];
-
-    let availableCountries = [...allCountries]; // Daftar antrean
+    let allCountries = [];
+    let availableCountries = [];
     let cur = {}, score = 0, currentIndex = -1;
+
+    async function initGame() {
+        try {
+            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,translations,continents,capital');
+            const data = await res.json();
+            
+            allCountries = data.map(c => ({
+                id: [
+                    (c.translations.idn ? c.translations.idn.common : c.name.common).toLowerCase(),
+                    (c.translations.idn ? c.translations.idn.official : c.name.common).toLowerCase()
+                ],
+                en: [
+                    c.name.common.toLowerCase(),
+                    c.name.official.toLowerCase()
+                ],
+                code: c.cca2.toLowerCase(),
+                cont: c.continents[0],
+                cap: c.capital ? c.capital[0] : "Rahasia"
+            }));
+
+            availableCountries = [...allCountries];
+            document.getElementById('ans-in').disabled = false;
+            document.getElementById('ans-in').placeholder = "Ketik Nama Negara...";
+            loadQ();
+        } catch (e) {
+            toast("Gagal memuat database!", "var(--red)");
+        }
+    }
 
     function loadQ() {
         if (availableCountries.length === 0) {
-            toast("🎉 HEBAT! SEMUA TERJAWAB", "var(--accent)");
-            availableCountries = [...allCountries]; // Reset jika habis
+            toast("🎉 SEMUA 195+ NEGARA TERJAWAB!", "var(--accent)");
+            availableCountries = [...allCountries]; 
         }
         
-        // Pilih acak dari yang tersisa
         currentIndex = Math.floor(Math.random() * availableCountries.length);
         cur = availableCountries[currentIndex];
 
-        document.getElementById('q-img').src = `https://flagcdn.com/w640/${cur.code}.png`;
+        const img = document.getElementById('q-img');
+        const loader = document.getElementById('loader');
+        
+        img.style.display = 'none';
+        loader.style.display = 'block';
+        img.src = `https://flagcdn.com/w640/${cur.code}.png`;
+        
+        img.onload = () => {
+            img.style.display = 'block';
+            loader.style.display = 'none';
+        };
+
         document.getElementById('ans-in').value = '';
         document.getElementById('h-continent').style.display = 'none';
         document.getElementById('h-capital').style.display = 'none';
@@ -109,15 +131,17 @@
         const input = document.getElementById('ans-in').value.toLowerCase().trim();
         if (!input) return;
 
-        if (cur.id.includes(input) || cur.en.includes(input)) {
+        // Cek kecocokan di database nama ID atau EN
+        const isCorrect = cur.id.includes(input) || cur.en.includes(input);
+
+        if (isCorrect) {
             score += 10;
             document.getElementById('score').innerText = score;
-            toast("✅ BENAR!", "var(--green)");
+            toast(`✅ BENAR! <br><small>${cur.id[0].toUpperCase()}</small>`, "var(--green)");
             
-            // HAPUS DARI DAFTAR agar tidak muncul lagi
+            // Hapus agar tidak muncul lagi
             availableCountries.splice(currentIndex, 1);
-            
-            setTimeout(loadQ, 1000);
+            setTimeout(loadQ, 1200);
         } else {
             toast("❌ SALAH!", "var(--red)");
         }
@@ -139,10 +163,10 @@
         const p = document.getElementById('pop');
         p.innerHTML = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
+        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1800);
     }
 
-    loadQ();
+    initGame();
     document.getElementById('ans-in').addEventListener('keypress', (e) => { if (e.key === 'Enter') check(); });
 </script>
 </body>
