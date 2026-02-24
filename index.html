@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EduPlay Global - Final Sale Edition</title>
+    <title>EduPlay Global - Pro Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
@@ -12,32 +12,36 @@
         .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
         .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 10px 0; font-weight: 800; letter-spacing: 1px; }
         
+        /* Tabs */
         .tabs { display: flex; background: var(--card); padding: 6px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 0.85rem; }
         .tab.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
 
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        /* Game Card */
+        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; display: flex; align-items: center; justify-content: center; }
-        #q-img { width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: 0.3s; }
+        #q-img { width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: 0.3s ease-in-out; }
         
-        /* Loader Sederhana */
-        .loader { position: absolute; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* New Better Loader */
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; position: absolute; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); padding: 12px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
+        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); padding: 12px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); z-index: 5; }
 
         input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; }
         input:focus { border-color: var(--accent); }
         
         .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
-        .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .btn:active { transform: scale(0.95); }
-        .b-cek { background: var(--green); }
+        .b-cek { background: var(--green); font-size: 1rem; }
         .b-hint { background: #EAB308; font-size: 1.5rem; }
         .b-skip { background: #475569; font-size: 1.5rem; }
 
         .score-box { font-size: 1.1rem; font-weight: 800; color: #94A3B8; margin-top: 5px; display: flex; justify-content: space-between; align-items: center; }
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 30px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; }
+        .badge { background: #334155; padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; color: #A29BFE; }
+        
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 30px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; text-align: center; }
     </style>
 </head>
 <body>
@@ -50,8 +54,8 @@
         </div>
         <div class="game-card">
             <div class="img-box">
-                <div id="loader" class="loader"></div>
-                <img id="q-img" src="">
+                <div id="loader" class="spinner"></div>
+                <img id="q-img" src="" alt="Soal">
                 <div id="hint-ui" class="hint-text"></div>
             </div>
             <input type="text" id="ans-in" placeholder="Jawab (ID / EN)" autocomplete="off">
@@ -63,30 +67,33 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span style="font-size: 0.7rem; background:#334155; padding:5px 10px; border-radius:10px;">ID / EN ACTIVE</span>
+            <span class="badge">BILINGUAL ID/EN</span>
         </div>
     </div>
 
 <script>
     let db = { flag: [], animal: [] }, used = { flag: [], animal: [] }, cur = {}, mode = 'flag', score = 0;
 
-    // Dictionary Bahasa Indonesia untuk Bendera (Menjamin 2 Bahasa Jalan)
-    const dictID = {
+    // Dictionary ID untuk Bendera agar 2 bahasa jalan 100%
+    const flagID = {
         "Germany": "Jerman", "France": "Prancis", "Netherlands": "Belanda", "Japan": "Jepang",
         "South Korea": "Korea Selatan", "Spain": "Spanyol", "Italy": "Italia", "Brazil": "Brasil",
         "Russia": "Rusia", "United States": "Amerika Serikat", "Egypt": "Mesir", "Turkey": "Turki",
-        "Malaysia": "Malaysia", "Thailand": "Thailand", "Switzerland": "Swiss", "Greece": "Yunani"
+        "Malaysia": "Malaysia", "Thailand": "Thailand", "India": "India", "Greece": "Yunani",
+        "Switzerland": "Swiss", "Belgium": "Belgia", "Portugal": "Portugal", "China": "Tiongkok"
     };
 
-    // Database Hewan dengan Link Super Stabil dari Pixabay (Backup ready)
+    // Database Hewan dengan Link Sumber Unsplash (Lebih Stabil & Anti-Block)
     const animalDB = [
-        {id: "Elang", en: "Eagle", h: "Burung pemangsa berparuh tajam", i: "https://cdn.pixabay.com/photo/2017/01/24/18/43/eagle-2006114_640.jpg"},
-        {id: "Gajah", en: "Elephant", h: "Hewan darat terbesar dengan belalai", i: "https://cdn.pixabay.com/photo/2016/12/12/12/35/elephant-1901451_640.jpg"},
-        {id: "Singa", en: "Lion", h: "Kucing besar yang disebut raja hutan", i: "https://cdn.pixabay.com/photo/2014/12/08/17/52/lion-561051_640.jpg"},
-        {id: "Jerapah", en: "Giraffe", h: "Leher panjang untuk makan daun tinggi", i: "https://cdn.pixabay.com/photo/2017/04/11/21/34/giraffe-2222908_640.jpg"},
-        {id: "Panda", en: "Panda", h: "Beruang hitam putih pemakan bambu", i: "https://cdn.pixabay.com/photo/2016/03/04/22/54/panda-1236875_640.jpg"},
-        {id: "Harimau", en: "Tiger", h: "Kucing besar dengan pola garis oranye hitam", i: "https://cdn.pixabay.com/photo/2017/07/24/19/57/tiger-2535888_640.jpg"},
-        {id: "Gorila", en: "Gorilla", h: "Primata besar yang sangat kuat", i: "https://cdn.pixabay.com/photo/2017/06/04/14/06/gorilla-2371151_640.jpg"}
+        {id: "Elang", en: "Eagle", h: "Burung pemangsa dengan penglihatan tajam", i: "https://images.unsplash.com/photo-1506220926022-cc5c12acdb35?w=500&q=80"},
+        {id: "Gajah", en: "Elephant", h: "Punya belalai panjang & telinga lebar", i: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=500&q=80"},
+        {id: "Singa", en: "Lion", h: "Raja hutan yang memiliki surai", i: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=80"},
+        {id: "Harimau", en: "Tiger", h: "Kucing besar bergaris oranye-hitam", i: "https://images.unsplash.com/photo-1508817628294-5a453fa0b8fb?w=500&q=80"},
+        {id: "Jerapah", en: "Giraffe", h: "Leher sangat panjang untuk makan daun", i: "https://images.unsplash.com/photo-1547721064-3620366328ff?w=500&q=80"},
+        {id: "Panda", en: "Panda", h: "Hewan Tiongkok yang suka makan bambu", i: "https://images.unsplash.com/photo-1564349683136-77e08bef1ed1?w=500&q=80"},
+        {id: "Kuda Nil", en: "Hippo", h: "Badan besar, sering berendam di air", i: "https://images.unsplash.com/photo-1568241723642-9900494cc2e2?w=500&q=80"},
+        {id: "Zebra", en: "Zebra", h: "Kuda liar dengan motif garis hitam-putih", i: "https://images.unsplash.com/photo-1501706369519-1d45114704bd?w=500&q=80"},
+        {id: "Kura-kura", en: "Turtle", h: "Jalan lambat & memiliki tempurung", i: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500&q=80"}
     ];
 
     async function init() {
@@ -95,13 +102,13 @@
             const data = await res.json();
             db.flag = data.map(c => ({
                 en: c.name.common,
-                id: dictID[c.name.common] || c.name.common,
+                id: flagID[c.name.common] || c.name.common,
                 i: c.flags.png,
                 h: "Benua: " + c.continents[0]
             }));
             db.animal = animalDB;
             loadQ();
-        } catch(e) { toast("Internet Error!", "var(--red)"); }
+        } catch(e) { toast("Koneksi Error!", "var(--red)"); }
     }
 
     function setM(m) {
@@ -122,18 +129,17 @@
         img.style.opacity = '0';
         loader.style.display = 'block';
         
-        // Anti-Cache Link
-        img.src = cur.i + "?v=" + Math.random();
+        // Memaksa loading gambar baru
+        img.src = cur.i;
         
         img.onload = () => {
             img.style.opacity = '1';
             loader.style.display = 'none';
         };
-        
+
         img.onerror = () => {
-            // Jika Pixabay gagal, coba server Wikipedia sebagai cadangan
-            img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Bald_Eagle_Portrait_Looking_Left.jpg/640px-Bald_Eagle_Portrait_Looking_Left.jpg";
-            console.log("Image failed, switching to backup...");
+            img.src = "https://via.placeholder.com/400x300/1E293B/FFFFFF?text=Gagal+Memuat+Gambar";
+            loader.style.display = 'none';
         };
 
         document.getElementById('ans-in').value = '';
@@ -165,6 +171,7 @@
         p.style.transform = "translateX(-50%) translateY(0)";
         setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1200);
     }
+
     init();
 </script>
 </body>
