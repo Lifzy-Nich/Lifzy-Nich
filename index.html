@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG - 195+ Countries</title>
+    <title>GLOBAL FLAG - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
@@ -20,7 +20,7 @@
         .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .hint-container { min-height: 70px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .hint-container { min-height: 75px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
         .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -53,16 +53,16 @@
                 <div id="h-continent" class="hint-text"></div>
                 <div id="h-capital" class="hint-text" style="border-color: #EAB308; color: #EAB308;"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="Memuat data..." disabled autocomplete="off">
+            <input type="text" id="ans-in" placeholder="Memuat 195+ Bendera..." disabled autocomplete="off">
             <div class="btns">
-                <button class="btn b-cek" onclick="check()">CEK</button>
-                <button class="btn b-hint" onclick="toggleH()">💡</button>
-                <button class="btn b-skip" onclick="loadQ()">⏩</button>
+                <button class="btn b-cek" id="btn-cek">CEK</button>
+                <button class="btn b-hint" id="btn-hint">💡</button>
+                <button class="btn b-skip" id="btn-skip">⏩</button>
             </div>
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span id="remaining" class="status-tag">MEMUAT...</span>
+            <span class="status-tag">ANTI-DUPLICATE ACTIVE</span>
         </div>
     </div>
 
@@ -87,7 +87,7 @@
                 ],
                 code: c.cca2.toLowerCase(),
                 cont: c.continents[0],
-                cap: c.capital ? c.capital[0] : "Rahasia"
+                cap: c.capital && c.capital[0] ? c.capital[0] : "Tidak Diketahui"
             }));
 
             availableCountries = [...allCountries];
@@ -100,11 +100,13 @@
     }
 
     function loadQ() {
+        // Jika antrean kosong, reset dari awal
         if (availableCountries.length === 0) {
-            toast("🎉 SEMUA 195+ NEGARA TERJAWAB!", "var(--accent)");
+            toast("🎉 SEMUA NEGARA TELAH DIJAWAB!", "var(--accent)");
             availableCountries = [...allCountries]; 
         }
         
+        // Pilih acak dari sisa negara yang belum dijawab
         currentIndex = Math.floor(Math.random() * availableCountries.length);
         cur = availableCountries[currentIndex];
 
@@ -123,15 +125,13 @@
         document.getElementById('ans-in').value = '';
         document.getElementById('h-continent').style.display = 'none';
         document.getElementById('h-capital').style.display = 'none';
-        document.getElementById('remaining').innerText = `SISA: ${availableCountries.length}`;
         document.getElementById('ans-in').focus();
     }
 
-    function check() {
+    function checkAnswer() {
         const input = document.getElementById('ans-in').value.toLowerCase().trim();
         if (!input) return;
 
-        // Cek kecocokan di database nama ID atau EN
         const isCorrect = cur.id.includes(input) || cur.en.includes(input);
 
         if (isCorrect) {
@@ -139,24 +139,31 @@
             document.getElementById('score').innerText = score;
             toast(`✅ BENAR! <br><small>${cur.id[0].toUpperCase()}</small>`, "var(--green)");
             
-            // Hapus agar tidak muncul lagi
+            // HAPUS DARI ANTREAN (Agar tidak muncul lagi)
             availableCountries.splice(currentIndex, 1);
+            
             setTimeout(loadQ, 1200);
         } else {
-            toast("❌ SALAH!", "var(--red)");
+            toast("❌ SALAH! COBA LAGI", "var(--red)");
         }
     }
 
-    function toggleH() {
+    function toggleHint() {
         const h1 = document.getElementById('h-continent');
         const h2 = document.getElementById('h-capital');
+        
         if (h1.style.display === 'none') {
-            h1.innerText = "🌍 BENUA: " + cur.cont;
+            h1.innerText = "🌍 BENUA: " + translateContinent(cur.cont);
             h1.style.display = 'block';
-        } else {
+        } else if (h2.style.display === 'none') {
             h2.innerText = "🏛️ IBU KOTA: " + cur.cap;
             h2.style.display = 'block';
         }
+    }
+
+    function translateContinent(cont) {
+        const map = { "Asia":"Asia", "Europe":"Eropa", "Africa":"Afrika", "Oceania":"Oseania", "North America":"Amerika Utara", "South America":"Amerika Selatan" };
+        return map[cont] || cont;
     }
 
     function toast(m, c) {
@@ -166,8 +173,12 @@
         setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1800);
     }
 
+    document.getElementById('btn-cek').addEventListener('click', checkAnswer);
+    document.getElementById('btn-hint').addEventListener('click', toggleHint);
+    document.getElementById('btn-skip').addEventListener('click', loadQ);
+    document.getElementById('ans-in').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
+
     initGame();
-    document.getElementById('ans-in').addEventListener('keypress', (e) => { if (e.key === 'Enter') check(); });
 </script>
 </body>
 </html>
