@@ -3,40 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EduPlay Global Pro</title>
+    <title>EduPlay Global v4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
         .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
-        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 0; font-weight: 800; letter-spacing: 1px; }
-        
-        /* Tab Mode */
+        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 0; font-weight: 800; }
         .tabs { display: flex; background: var(--card); padding: 6px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
         .tab.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
-
-        /* Game Card */
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
         .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; }
-        #q-img { width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: 0.4s; }
+        #q-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.4s; }
         .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
-
-        /* Input & Buttons */
-        input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; }
+        input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; }
         input:focus { border-color: var(--accent); }
-        
         .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
         .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-        .btn:active { transform: scale(0.95); }
-        .b-cek { background: var(--green); }
-        .b-hint { background: #EAB308; font-size: 1.4rem; }
-        .b-skip { background: #475569; font-size: 1.4rem; }
-
-        /* Stats & Pop */
+        .b-cek { background: var(--green); } .b-hint { background: #EAB308; font-size: 1.4rem; } .b-skip { background: #475569; font-size: 1.4rem; }
         .score-box { text-align: left; font-size: 1rem; font-weight: 800; color: #94A3B8; padding-left: 10px; }
-        #pop { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 35px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 99; color: white; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        #pop { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 35px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 99; color: white; }
     </style>
 </head>
 <body>
@@ -52,7 +40,7 @@
                 <img id="q-img" src="" alt="Soal">
                 <div id="hint-ui" class="hint-text"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="Siapa aku?" autocomplete="off">
+            <input type="text" id="ans-in" placeholder="ID / EN ?" autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
                 <button class="btn b-hint" onclick="toggleH()">💡</button>
@@ -64,17 +52,32 @@
 
 <script>
     let db = { flag: [], animal: [] }, used = { flag: [], animal: [] }, cur = {}, mode = 'flag', score = 0;
-    const animList = ["Singa","Gajah","Harimau","Jerapah","Hiu","Panda","Zebra","Koala","Elang","Pinguin","Gorila","Kangguru","Serigala","Lumba-lumba","Paus","Kura-kura","Unta","Badak","Monyet","Buaya","Cendrawasih","Kakaktua","Flamingo","Landak","Kelinci","Orangutan","Bunglon","Ikan Badut","Gurita","Komodo","Ular","Lebah","Kepiting","Ubur-ubur","Singa Laut","Walrus","Rusa","Kuda Nil","Cheetah","Kukang"];
+
+    // Database Bilingual (ID & EN)
+    const animalDB = [
+        {id: "Singa", en: "Lion", h: "Si Raja Hutan"},
+        {id: "Gajah", en: "Elephant", h: "Punya belalai panjang"},
+        {id: "Harimau", en: "Tiger", h: "Kucing besar bergaris"},
+        {id: "Jerapah", en: "Giraffe", h: "Lehernya sangat panjang"},
+        {id: "Elang", en: "Eagle", h: "Burung pemangsa yang gagah"},
+        {id: "Hiu", en: "Shark", h: "Predator laut bergigi tajam"},
+        {id: "Kuda", en: "Horse", h: "Bisa lari sangat kencang"},
+        {id: "Panda", en: "Panda", h: "Suka makan bambu"},
+        {id: "Kura-kura", en: "Turtle", h: "Berjalan lambat dengan tempurung"},
+        {id: "Lumba-lumba", en: "Dolphin", h: "Mamalia laut yang cerdas"},
+        {id: "Serigala", en: "Wolf", h: "Melolong saat bulan purnama"},
+        {id: "Zebra", en: "Zebra", h: "Kuda dengan garis hitam putih"},
+        {id: "Monyet", en: "Monkey", h: "Suka makan pisang"},
+        {id: "Buaya", en: "Crocodile", h: "Reptil besar di sungai"},
+        {id: "Beruang", en: "Bear", h: "Suka madu dan hibernasi"}
+    ];
 
     async function init() {
         try {
             const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,continents');
             const data = await res.json();
-            db.flag = data.map(c => ({n: c.name.common, i: c.flags.png, h: "Benua: " + c.continents[0]}));
-            db.animal = animList.map(n => ({
-                n, h: "Inisial: " + n[0],
-                i: `https://www.bing.com/th?id=AMMS_&q=${encodeURIComponent(n + " animal")}&w=500&h=400&c=7&rs=1&p=0`
-            }));
+            db.flag = data.map(c => ({id: c.name.common, en: c.name.common, i: c.flags.png, h: "Benua: " + c.continents[0]}));
+            db.animal = animalDB.map(a => ({...a, i: `https://api.pexels.com/v1/search?query=${a.en}&per_page=1`})); 
             loadQ();
         } catch(e) { toast("Internet Error!", "var(--red)"); }
     }
@@ -87,13 +90,17 @@
     }
 
     function loadQ() {
-        let pool = db[mode].filter(x => !used[mode].includes(x.n));
+        let pool = db[mode].filter(x => !used[mode].includes(x.id));
         if (!pool.length) { used[mode] = []; pool = db[mode]; }
         cur = pool[Math.floor(Math.random() * pool.length)];
+        
         const img = document.getElementById('q-img');
         img.style.opacity = '0';
-        // Fix image hewan dengan source yang lebih stabil
-        img.src = mode === 'flag' ? cur.i : `https://loremflickr.com/500/400/${cur.n.toLowerCase()},animal/all`;
+        
+        // Pilihan Gambar yang Lebih Akurat
+        let imgUrl = mode === 'flag' ? cur.i : `https://loremflickr.com/500/400/${cur.en.toLowerCase()},animal/all`;
+        img.src = imgUrl;
+        
         img.onload = () => img.style.opacity = '1';
         document.getElementById('ans-in').value = '';
         document.getElementById('hint-ui').style.display = 'none';
@@ -102,10 +109,13 @@
 
     function check() {
         let v = document.getElementById('ans-in').value.toLowerCase().trim();
-        if (v === cur.n.toLowerCase()) {
-            score += 10; used[mode].push(cur.n);
+        let correctID = cur.id.toLowerCase();
+        let correctEN = cur.en.toLowerCase();
+        
+        if (v === correctID || v === correctEN) {
+            score += 10; used[mode].push(cur.id);
             document.getElementById('score').innerText = score;
-            toast("✅ BENAR!", "var(--green)");
+            toast("✅ BENAR! (" + cur.en + ")", "var(--green)");
             setTimeout(loadQ, 800);
         } else { toast("❌ SALAH!", "var(--red)"); }
     }
