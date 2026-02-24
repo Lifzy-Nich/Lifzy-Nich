@@ -3,45 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EduPlay Global - Pro Fix</title>
+    <title>EduPlay Global - Final Stable</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
         .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
-        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 10px 0; font-weight: 800; letter-spacing: 1px; }
+        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 10px 0; font-weight: 800; text-transform: uppercase; }
         
         /* Tabs */
         .tabs { display: flex; background: var(--card); padding: 6px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 0.85rem; }
+        .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
 
         /* Game Card */
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; display: flex; align-items: center; justify-content: center; }
-        #q-img { width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: 0.3s ease-in-out; }
+        .game-card { background: var(--card); border-radius: 30px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; position: relative; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
+        #q-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.3s; }
         
-        /* New Better Loader */
-        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-left-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; position: absolute; }
+        /* Loading Spinner */
+        .loader { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; position: absolute; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); padding: 12px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); z-index: 5; }
+        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.9); padding: 10px; font-size: 0.8rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
 
-        input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; }
-        input:focus { border-color: var(--accent); }
-        
-        .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
+        /* Input & Buttons */
+        input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1rem; text-align: center; margin-bottom: 15px; outline: none; }
+        .btns { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
         .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn:active { transform: scale(0.95); }
-        .b-cek { background: var(--green); font-size: 1rem; }
-        .b-hint { background: #EAB308; font-size: 1.5rem; }
-        .b-skip { background: #475569; font-size: 1.5rem; }
+        .b-cek { background: var(--green); }
+        .b-hint { background: #EAB308; font-size: 1.4rem; }
+        .b-skip { background: #475569; font-size: 1.4rem; }
 
-        .score-box { font-size: 1.1rem; font-weight: 800; color: #94A3B8; margin-top: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { background: #334155; padding: 5px 12px; border-radius: 10px; font-size: 0.7rem; color: #A29BFE; }
-        
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 30px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; text-align: center; }
+        .score-box { font-size: 1rem; font-weight: 800; color: #94A3B8; margin-top: 5px; display: flex; justify-content: space-between; align-items: center; }
+        #pop { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 12px 25px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; }
     </style>
 </head>
 <body>
@@ -54,11 +50,11 @@
         </div>
         <div class="game-card">
             <div class="img-box">
-                <div id="loader" class="spinner"></div>
-                <img id="q-img" src="" alt="Soal">
+                <div id="loader" class="loader"></div>
+                <img id="q-img" src="">
                 <div id="hint-ui" class="hint-text"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="Jawab (ID / EN)" autocomplete="off">
+            <input type="text" id="ans-in" placeholder="Ketik jawaban..." autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
                 <button class="btn b-hint" onclick="toggleH()">💡</button>
@@ -67,48 +63,44 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span class="badge">BILINGUAL ID/EN</span>
+            <span style="font-size: 0.7rem; background:#334155; padding:4px 8px; border-radius:8px;">BILINGUAL: ON</span>
         </div>
     </div>
 
 <script>
     let db = { flag: [], animal: [] }, used = { flag: [], animal: [] }, cur = {}, mode = 'flag', score = 0;
 
-    // Dictionary ID untuk Bendera agar 2 bahasa jalan 100%
-    const flagID = {
+    // Database Nama Indonesia untuk Bendera (Manual agar akurat)
+    const idNames = {
         "Germany": "Jerman", "France": "Prancis", "Netherlands": "Belanda", "Japan": "Jepang",
-        "South Korea": "Korea Selatan", "Spain": "Spanyol", "Italy": "Italia", "Brazil": "Brasil",
-        "Russia": "Rusia", "United States": "Amerika Serikat", "Egypt": "Mesir", "Turkey": "Turki",
-        "Malaysia": "Malaysia", "Thailand": "Thailand", "India": "India", "Greece": "Yunani",
-        "Switzerland": "Swiss", "Belgium": "Belgia", "Portugal": "Portugal", "China": "Tiongkok"
+        "Spain": "Spanyol", "Italy": "Italia", "Brazil": "Brasil", "Russia": "Rusia",
+        "United States": "Amerika Serikat", "Egypt": "Mesir", "Turkey": "Turki", "India": "India"
     };
 
-    // Database Hewan dengan Link Sumber Unsplash (Lebih Stabil & Anti-Block)
+    // Database Hewan dengan Link Gambar STATIS (Paling Aman dari Black Screen)
     const animalDB = [
-        {id: "Elang", en: "Eagle", h: "Burung pemangsa dengan penglihatan tajam", i: "https://images.unsplash.com/photo-1506220926022-cc5c12acdb35?w=500&q=80"},
-        {id: "Gajah", en: "Elephant", h: "Punya belalai panjang & telinga lebar", i: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=500&q=80"},
-        {id: "Singa", en: "Lion", h: "Raja hutan yang memiliki surai", i: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=500&q=80"},
-        {id: "Harimau", en: "Tiger", h: "Kucing besar bergaris oranye-hitam", i: "https://images.unsplash.com/photo-1508817628294-5a453fa0b8fb?w=500&q=80"},
-        {id: "Jerapah", en: "Giraffe", h: "Leher sangat panjang untuk makan daun", i: "https://images.unsplash.com/photo-1547721064-3620366328ff?w=500&q=80"},
-        {id: "Panda", en: "Panda", h: "Hewan Tiongkok yang suka makan bambu", i: "https://images.unsplash.com/photo-1564349683136-77e08bef1ed1?w=500&q=80"},
-        {id: "Kuda Nil", en: "Hippo", h: "Badan besar, sering berendam di air", i: "https://images.unsplash.com/photo-1568241723642-9900494cc2e2?w=500&q=80"},
-        {id: "Zebra", en: "Zebra", h: "Kuda liar dengan motif garis hitam-putih", i: "https://images.unsplash.com/photo-1501706369519-1d45114704bd?w=500&q=80"},
-        {id: "Kura-kura", en: "Turtle", h: "Jalan lambat & memiliki tempurung", i: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500&q=80"}
+        {id: "Gajah", en: "Elephant", h: "Punya belalai panjang", i: "https://images.pexels.com/photos/66898/elephant-cub-tsavo-kenya-66898.jpeg?auto=compress&cs=tinysrgb&w=500"},
+        {id: "Singa", en: "Lion", h: "Si raja hutan", i: "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=500"},
+        {id: "Harimau", en: "Tiger", h: "Kucing besar bergaris", i: "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg?auto=compress&cs=tinysrgb&w=500"},
+        {id: "Zebra", en: "Zebra", h: "Kuda garis hitam putih", i: "https://images.pexels.com/photos/1054655/pexels-photo-1054655.jpeg?auto=compress&cs=tinysrgb&w=500"},
+        {id: "Elang", en: "Eagle", h: "Burung pemangsa tajam", i: "https://images.pexels.com/photos/351265/pexels-photo-351265.jpeg?auto=compress&cs=tinysrgb&w=500"},
+        {id: "Kura-kura", en: "Turtle", h: "Jalan lambat bercangkang", i: "https://images.pexels.com/photos/1618606/pexels-photo-1618606.jpeg?auto=compress&cs=tinysrgb&w=500"}
     ];
 
     async function init() {
         try {
+            // Bendera menggunakan API resmi yang stabil
             const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,continents');
             const data = await res.json();
-            db.flag = data.map(c => ({
+            db.flag = data.slice(0, 50).map(c => ({
                 en: c.name.common,
-                id: flagID[c.name.common] || c.name.common,
+                id: idNames[c.name.common] || c.name.common,
                 i: c.flags.png,
                 h: "Benua: " + c.continents[0]
             }));
             db.animal = animalDB;
             loadQ();
-        } catch(e) { toast("Koneksi Error!", "var(--red)"); }
+        } catch(e) { toast("Internet Bermasalah", "var(--red)"); }
     }
 
     function setM(m) {
@@ -129,30 +121,32 @@
         img.style.opacity = '0';
         loader.style.display = 'block';
         
-        // Memaksa loading gambar baru
-        img.src = cur.i;
+        // Memaksa browser memuat ulang gambar tanpa cache yang rusak
+        const newSrc = cur.i + (cur.i.includes('?') ? '&' : '?') + 't=' + new Date().getTime();
+        img.src = newSrc;
         
         img.onload = () => {
             img.style.opacity = '1';
             loader.style.display = 'none';
         };
-
+        
         img.onerror = () => {
-            img.src = "https://via.placeholder.com/400x300/1E293B/FFFFFF?text=Gagal+Memuat+Gambar";
+            // Backup jika link utama mati
+            img.src = "https://via.placeholder.com/400x300/1E293B/FFFFFF?text=Gagal+Memuat";
             loader.style.display = 'none';
         };
 
         document.getElementById('ans-in').value = '';
         document.getElementById('hint-ui').style.display = 'none';
-        document.getElementById('ans-in').focus();
     }
 
     function check() {
         let v = document.getElementById('ans-in').value.toLowerCase().trim();
+        // Cek 2 Bahasa (Indonesia dan Inggris)
         if (v === cur.id.toLowerCase() || v === cur.en.toLowerCase()) {
             score += 10; used[mode].push(cur.en);
             document.getElementById('score').innerText = score;
-            toast(`✅ BENAR! (${cur.id})`, "var(--green)");
+            toast("✅ BENAR!", "var(--green)");
             setTimeout(loadQ, 800);
         } else {
             toast("❌ SALAH!", "var(--red)");
@@ -169,7 +163,7 @@
         const p = document.getElementById('pop');
         p.innerText = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1200);
+        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-100px)", 1200);
     }
 
     init();
