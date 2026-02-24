@@ -20,8 +20,8 @@
         .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .hint-container { min-height: 75px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-        .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
+        .hint-container { min-height: 100px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+        .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         input { width: 100%; padding: 20px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; font-weight: 600; }
@@ -52,6 +52,7 @@
             <div class="hint-container">
                 <div id="h-continent" class="hint-text"></div>
                 <div id="h-capital" class="hint-text" style="border-color: #EAB308; color: #EAB308;"></div>
+                <div id="h-loc" class="hint-text" style="border-color: #FF7675; color: #FF7675;"></div>
             </div>
             <input type="text" id="ans-in" placeholder="Memuat 195+ Bendera..." disabled autocomplete="off">
             <div class="btns">
@@ -62,7 +63,7 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span class="status-tag">ANTI-DUPLICATE ACTIVE</span>
+            <span class="status-tag">BILINGUAL & TRIPLE HINT</span>
         </div>
     </div>
 
@@ -73,22 +74,30 @@
 
     async function initGame() {
         try {
-            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,translations,continents,capital');
+            // Mengambil field tambahan 'subregion' dan 'borders' untuk hint lokasi
+            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,translations,continents,capital,subregion,borders');
             const data = await res.json();
             
-            allCountries = data.map(c => ({
-                id: [
-                    (c.translations.idn ? c.translations.idn.common : c.name.common).toLowerCase(),
-                    (c.translations.idn ? c.translations.idn.official : c.name.common).toLowerCase()
-                ],
-                en: [
-                    c.name.common.toLowerCase(),
-                    c.name.official.toLowerCase()
-                ],
-                code: c.cca2.toLowerCase(),
-                cont: c.continents[0],
-                cap: c.capital && c.capital[0] ? c.capital[0] : "Tidak Diketahui"
-            }));
+            allCountries = data.map(c => {
+                const names = new Set();
+                // Tambahkan semua kemungkinan nama (Indonesia & Inggris)
+                if (c.translations.idn) {
+                    names.add(c.translations.idn.common.toLowerCase());
+                    names.add(c.translations.idn.official.toLowerCase());
+                }
+                names.add(c.name.common.toLowerCase());
+                names.add(c.name.official.toLowerCase());
+                
+                return {
+                    validNames: Array.from(names),
+                    displayName: c.translations.idn ? c.translations.idn.common : c.name.common,
+                    code: c.cca2.toLowerCase(),
+                    cont: c.continents[0],
+                    cap: c.capital && c.capital[0] ? c.capital[0] : "Tidak Diketahui",
+                    sub: c.subregion || "Wilayah Global",
+                    borders: c.borders || []
+                };
+            });
 
             availableCountries = [...allCountries];
             document.getElementById('ans-in').disabled = false;
@@ -100,13 +109,11 @@
     }
 
     function loadQ() {
-        // Jika antrean kosong, reset dari awal
         if (availableCountries.length === 0) {
             toast("🎉 SEMUA NEGARA TELAH DIJAWAB!", "var(--accent)");
             availableCountries = [...allCountries]; 
         }
         
-        // Pilih acak dari sisa negara yang belum dijawab
         currentIndex = Math.floor(Math.random() * availableCountries.length);
         cur = availableCountries[currentIndex];
 
@@ -125,6 +132,7 @@
         document.getElementById('ans-in').value = '';
         document.getElementById('h-continent').style.display = 'none';
         document.getElementById('h-capital').style.display = 'none';
+        document.getElementById('h-loc').style.display = 'none';
         document.getElementById('ans-in').focus();
     }
 
@@ -132,16 +140,14 @@
         const input = document.getElementById('ans-in').value.toLowerCase().trim();
         if (!input) return;
 
-        const isCorrect = cur.id.includes(input) || cur.en.includes(input);
+        // Cek apakah input ada di dalam kumpulan nama valid (ID/EN)
+        const isCorrect = cur.validNames.includes(input);
 
         if (isCorrect) {
             score += 10;
             document.getElementById('score').innerText = score;
-            toast(`✅ BENAR! <br><small>${cur.id[0].toUpperCase()}</small>`, "var(--green)");
-            
-            // HAPUS DARI ANTREAN (Agar tidak muncul lagi)
+            toast(`✅ BENAR! <br><small>${cur.displayName.toUpperCase()}</small>`, "var(--green)");
             availableCountries.splice(currentIndex, 1);
-            
             setTimeout(loadQ, 1200);
         } else {
             toast("❌ SALAH! COBA LAGI", "var(--red)");
@@ -151,6 +157,7 @@
     function toggleHint() {
         const h1 = document.getElementById('h-continent');
         const h2 = document.getElementById('h-capital');
+        const h3 = document.getElementById('h-loc');
         
         if (h1.style.display === 'none') {
             h1.innerText = "🌍 BENUA: " + translateContinent(cur.cont);
@@ -158,6 +165,9 @@
         } else if (h2.style.display === 'none') {
             h2.innerText = "🏛️ IBU KOTA: " + cur.cap;
             h2.style.display = 'block';
+        } else if (h3.style.display === 'none') {
+            h3.innerText = "📍 LOKASI: Negara ini berada di " + cur.sub + (cur.borders.length > 0 ? " dan bertetangga dengan " + cur.borders.slice(0,2).join(", ") : "");
+            h3.style.display = 'block';
         }
     }
 
