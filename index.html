@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG PRO - Educational Edition</title>
+    <title>GLOBAL FLAG PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -12,56 +12,57 @@
         }
 
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at top, #1E293B, #0F172A); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; overflow-x: hidden; }
+        body { background: radial-gradient(circle at top, #1E293B, #0F172A); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; overflow: hidden; }
         
-        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.8s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Top Bar: Language & Title */
+        /* Top Bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .lang-switch { display: flex; background: var(--card); border-radius: 12px; padding: 4px; border: 1px solid var(--border); }
-        .lang-btn { border: none; background: none; color: #94A3B8; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .lang-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3); }
+        .lang-switch { display: flex; background: var(--card); border-radius: 14px; padding: 4px; border: 1px solid var(--border); }
+        .lang-btn { border: none; background: none; color: #94A3B8; padding: 6px 14px; border-radius: 10px; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .lang-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4); }
 
-        .header h1 { font-size: 1.8rem; background: linear-gradient(to right, #A29BFE, #FFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; font-weight: 800; }
+        .header h1 { font-size: 1.8rem; background: linear-gradient(45deg, #A29BFE, #6C5CE7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; font-weight: 800; letter-spacing: -1px; }
 
-        /* Main Game Card */
-        .game-card { background: var(--card); backdrop-filter: blur(10px); border-radius: 30px; padding: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; }
+        /* Game Card with New Entry Animation */
+        .game-card { background: var(--card); backdrop-filter: blur(15px); border-radius: 32px; padding: 22px; border: 1px solid var(--border); text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.4); position: relative; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .game-card.new-q { animation: nextQuestion 0.5s ease; }
+        @keyframes nextQuestion { 0% { opacity: 0; transform: scale(0.95) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
         
-        .img-box { width: 100%; height: 180px; border-radius: 20px; background: rgba(0,0,0,0.2); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
-        #q-img { max-width: 90%; max-height: 85%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4)); animation: zoomIn 0.5s ease; }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .img-box { width: 100%; height: 180px; border-radius: 24px; background: rgba(0,0,0,0.3); margin-bottom: 18px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); overflow: hidden; }
+        #q-img { max-width: 85%; max-height: 80%; object-fit: contain; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.5)); }
 
-        /* Hints Modern View */
-        .hint-container { min-height: 95px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 6px; }
-        .hint-text { background: rgba(108, 92, 231, 0.1); border-left: 4px solid var(--accent); color: #D6D1FF; padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; display: none; text-align: left; animation: slideIn 0.4s ease forwards; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        /* Hints */
+        .hint-container { min-height: 95px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+        .hint-text { background: rgba(108, 92, 231, 0.12); border-left: 4px solid var(--accent); color: #D6D1FF; padding: 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; display: none; text-align: left; animation: fadeInRight 0.4s ease forwards; }
+        @keyframes fadeInRight { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* Options Grid (SIMETRIS) */
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        /* Options Grid (Perfect Symmetry) */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
         .opt-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 18px; color: white; 
-            min-height: 65px; padding: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 20px; color: white; 
+            min-height: 68px; padding: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.25s ease;
+            display: flex; align-items: center; justify-content: center; line-height: 1.2;
         }
-        .opt-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-        .opt-btn.correct { background: var(--green) !important; border-color: #00D1A0; box-shadow: 0 0 20px rgba(0, 184, 148, 0.4); animation: pulse 0.5s ease; }
+        .opt-btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .opt-btn.correct { background: var(--green) !important; border-color: #00D1A0; box-shadow: 0 0 25px rgba(0, 184, 148, 0.5); }
         .opt-btn.wrong { background: var(--red) !important; border-color: #FF9E9E; animation: shake 0.4s ease; }
 
-        @keyframes shake { 0%,100% {transform:translateX(0)} 25% {transform:translateX(-5px)} 75% {transform:translateX(5px)} }
-        @keyframes pulse { 0% {transform:scale(1)} 50% {transform:scale(1.05)} 100% {transform:scale(1)} }
+        @keyframes shake { 0%,100% {transform:translateX(0)} 25% {transform:translateX(-6px)} 75% {transform:translateX(6px)} }
 
         /* Control Buttons */
-        .control-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn { height: 50px; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; color: white; transition: 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .b-hint { background: #EAB308; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); }
-        .b-skip { background: #475569; }
+        .control-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .btn { height: 55px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.3s; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .b-hint { background: #F59E0B; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3); }
+        .b-skip { background: #334155; }
+        .btn:active { transform: scale(0.95); }
 
-        .score-box { display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 15px 25px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; }
+        .score-box { display: flex; justify-content: space-between; background: rgba(255,255,255,0.04); padding: 18px 28px; border-radius: 24px; font-weight: 700; font-size: 0.9rem; border: 1px solid var(--border); }
         
-        #pop { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 12px 30px; border-radius: 50px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; color: white; font-weight: 800; }
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); z-index: 2000; color: white; font-weight: 800; backdrop-filter: blur(8px); }
         
-        .loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
@@ -71,12 +72,12 @@
         <div class="top-bar">
             <div class="header"><h1>GLOBAL FLAG</h1></div>
             <div class="lang-switch">
-                <button class="lang-btn active" onclick="setLang('id')">ID</button>
-                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button id="btn-id" class="lang-btn active" onclick="setLang('id')">ID</button>
+                <button id="btn-en" class="lang-btn" onclick="setLang('en')">EN</button>
             </div>
         </div>
 
-        <div class="game-card">
+        <div class="game-card" id="main-card">
             <div class="img-box">
                 <div id="loader" class="loader"></div>
                 <img id="q-img" src="" style="display:none">
@@ -84,15 +85,15 @@
 
             <div class="hint-container">
                 <div id="h-continent" class="hint-text"></div>
-                <div id="h-capital" class="hint-text" style="border-color: #EAB308;"></div>
+                <div id="h-capital" class="hint-text" style="border-color: #F59E0B;"></div>
                 <div id="h-loc" class="hint-text" style="border-color: #FF7675;"></div>
             </div>
 
             <div class="options-grid" id="options"></div>
 
             <div class="control-btns">
-                <button class="btn b-hint" id="btn-hint" onclick="toggleHint()">💡 <span id="txt-hint">PETUNJUK</span></button>
-                <button class="btn b-skip" id="btn-skip" onclick="loadQ()">⏩ <span id="txt-skip">LEWATI</span></button>
+                <button class="btn b-hint" onclick="toggleHint()">💡 <span id="txt-hint">PETUNJUK</span></button>
+                <button class="btn b-skip" onclick="loadQ()">⏩ <span id="txt-skip">LEWATI</span></button>
             </div>
         </div>
 
@@ -105,6 +106,7 @@
 <script>
     let allCountries = [], availableCountries = [], cur = {}, score = 0, isAnswering = false, countryLookup = {};
     let currentLang = 'id';
+    let currentChoices = []; // Menyimpan pilihan saat ini agar bisa ganti bahasa real-time
 
     const translations = {
         id: { hint: "PETUNJUK", skip: "LEWATI", cont: "BENUA", cap: "IBU KOTA", loc: "LOKASI", near: "Bertetangga dengan", area: "Berada di wilayah", unknown: "Tidak diketahui", correct: "BENAR!", wrong: "SALAH!", finish: "SEMUA TERJAWAB!" },
@@ -114,10 +116,15 @@
     function setLang(lang) {
         currentLang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        document.getElementById('btn-' + lang).classList.add('active');
+        
+        // Update UI Text
         document.getElementById('txt-hint').innerText = translations[lang].hint;
         document.getElementById('txt-skip').innerText = translations[lang].skip;
-        if(cur.displayName) generateOptions(); // Refresh bahasa pada tombol opsi
+        
+        // Update Jawaban & Petunjuk yang sedang tampil secara 100% akurat
+        if(currentChoices.length > 0) renderOptionButtons();
+        updateActiveHints();
     }
 
     async function initGame() {
@@ -129,7 +136,7 @@
                 countryLookup[c.cca3] = names;
                 return {
                     names, code: c.cca2.toLowerCase(), cont: c.continents[0],
-                    cap: c.capital?.[0] || translations[currentLang].unknown,
+                    cap: c.capital?.[0] || "...",
                     sub: c.subregion || "Global", borders: c.borders || []
                 };
             });
@@ -149,6 +156,12 @@
         cur = availableCountries[index];
         cur.originalIndex = index;
 
+        // Card Animation
+        const card = document.getElementById('main-card');
+        card.classList.remove('new-q');
+        void card.offsetWidth; // Trigger reflow
+        card.classList.add('new-q');
+
         document.getElementById('q-img').style.display = 'none';
         document.getElementById('loader').style.display = 'block';
         document.getElementById('q-img').src = `https://flagcdn.com/w640/${cur.code}.png`;
@@ -157,18 +170,24 @@
             document.getElementById('loader').style.display = 'none';
         };
 
-        generateOptions();
+        generateChoices();
+        renderOptionButtons();
         document.querySelectorAll('.hint-text').forEach(h => h.style.display = 'none');
     }
 
-    function generateOptions() {
-        const box = document.getElementById('options'); box.innerHTML = '';
+    function generateChoices() {
         let choices = [cur];
         while (choices.length < 4) {
             let rand = allCountries[Math.floor(Math.random() * allCountries.length)];
             if (!choices.find(c => c.code === rand.code)) choices.push(rand);
         }
-        choices.sort(() => Math.random() - 0.5).forEach(c => {
+        currentChoices = choices.sort(() => Math.random() - 0.5);
+    }
+
+    function renderOptionButtons() {
+        const box = document.getElementById('options'); 
+        box.innerHTML = '';
+        currentChoices.forEach(c => {
             const btn = document.createElement('button');
             btn.className = 'opt-btn';
             btn.innerText = c.names[currentLang];
@@ -191,23 +210,32 @@
             btn.classList.add('wrong');
             toast("❌ " + translations[currentLang].wrong, "var(--red)");
             Array.from(document.querySelectorAll('.opt-btn')).forEach(b => {
-                if(allCountries.find(x => x.names[currentLang] === b.innerText).code === cur.code) b.classList.add('correct');
+                if(currentChoices.find(x => x.names[currentLang] === b.innerText)?.code === cur.code) b.classList.add('correct');
             });
             setTimeout(loadQ, 1500);
         }
     }
 
-    function toggleHint() {
+    function updateActiveHints() {
         const h1 = document.getElementById('h-continent'), h2 = document.getElementById('h-capital'), h3 = document.getElementById('h-loc');
         const t = translations[currentLang];
-        if (h1.style.display === 'none') {
-            h1.innerHTML = `🌍 <b>${t.cont}:</b> ${translateCont(cur.cont)}`; h1.style.display = 'block';
-        } else if (h2.style.display === 'none') {
-            h2.innerHTML = `🏛️ <b>${t.cap}:</b> ${cur.cap}`; h2.style.display = 'block';
-        } else if (h3.style.display === 'none') {
+        if(h1.style.display === 'block') h1.innerHTML = `🌍 <b>${t.cont}:</b> ${translateCont(cur.cont)}`;
+        if(h2.style.display === 'block') h2.innerHTML = `🏛️ <b>${t.cap}:</b> ${cur.cap}`;
+        if(h3.style.display === 'block') {
             let neighborStr = cur.borders.map(b => countryLookup[b]?.[currentLang]).filter(n => n).slice(0, 2).join(" & ");
             h3.innerHTML = `📍 <b>${t.loc}:</b> ${t.area} ${cur.sub}${neighborStr ? ", " + t.near + " " + neighborStr : ""}`;
-            h3.style.display = 'block';
+        }
+    }
+
+    function toggleHint() {
+        const hints = ['h-continent', 'h-capital', 'h-loc'];
+        for(let id of hints) {
+            const el = document.getElementById(id);
+            if(el.style.display === 'none') {
+                el.style.display = 'block';
+                updateActiveHints();
+                break;
+            }
         }
     }
 
@@ -220,6 +248,7 @@
     function toast(m, c) {
         const p = document.getElementById('pop'); p.innerHTML = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
+        p.style.boxShadow = `0 10px 30px ${c}66`;
         setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
     }
 
