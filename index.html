@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG - Ultimate Edition</title>
+    <title>GLOBAL FLAG - Quiz Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
-        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 15px; }
-        .header h1 { text-align: center; font-size: 2.2rem; color: #A29BFE; margin: 15px 0; font-weight: 800; letter-spacing: 2px; }
+        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px; }
+        .header h1 { text-align: center; font-size: 2rem; color: #A29BFE; margin: 10px 0; font-weight: 800; letter-spacing: 2px; }
         
-        .game-card { background: var(--card); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .game-card { background: var(--card); border-radius: 30px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
-        .img-box { width: 100%; height: 210px; border-radius: 20px; background: #000; margin-bottom: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
-        #q-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)); }
+        .img-box { width: 100%; height: 180px; border-radius: 20px; background: #000; margin-bottom: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
+        #q-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; filter: drop-shadow(0 8px 15px rgba(0,0,0,0.5)); }
         
-        .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
+        .loader { width: 35px; height: 35px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .hint-container { min-height: 100px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
-        .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        .hint-container { min-height: 90px; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .hint-text { background: rgba(108, 92, 231, 0.1); border: 1px dashed var(--accent); color: #A29BFE; padding: 6px; border-radius: 10px; font-size: 0.75rem; font-weight: 700; display: none; animation: fadeIn 0.3s ease; }
 
-        input { width: 100%; padding: 20px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; font-weight: 600; }
-        input:focus { border-color: var(--accent); }
+        /* Grid Pilihan Ganda */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .opt-btn { background: #2D3748; border: 2px solid #3F4E66; border-radius: 15px; color: white; padding: 15px 10px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .opt-btn:active { transform: scale(0.95); }
+        .opt-btn.correct { background: var(--green); border-color: #00D1A0; }
+        .opt-btn.wrong { background: var(--red); border-color: #FF9E9E; }
 
-        .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
-        .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn:active { transform: translateY(2px); }
-        .b-cek { background: var(--green); }
-        .b-hint { background: #EAB308; font-size: 1.5rem; }
-        .b-skip { background: #475569; font-size: 1.5rem; }
+        .control-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { height: 50px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; font-size: 1.2rem; }
+        .b-hint { background: #EAB308; }
+        .b-skip { background: #475569; }
 
-        .score-box { display: flex; justify-content: space-between; font-weight: 800; color: #94A3B8; padding: 5px 10px; align-items: center; }
-        .status-tag { font-size: 0.65rem; background: #00B89422; padding: 5px 10px; border-radius: 8px; color: #00B894; border: 1px solid #00B89444; }
+        .score-box { display: flex; justify-content: space-between; font-weight: 800; color: #94A3B8; padding: 5px 10px; font-size: 0.8rem; }
         
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.4s; z-index: 100; color: white; font-weight: 800; text-align: center; }
+        #pop { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 12px 30px; border-radius: 50px; transition: 0.4s; z-index: 100; color: white; font-weight: 800; text-align: center; pointer-events: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -54,103 +55,122 @@
                 <div id="h-capital" class="hint-text" style="border-color: #EAB308; color: #EAB308;"></div>
                 <div id="h-loc" class="hint-text" style="border-color: #FF7675; color: #FF7675;"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="Memuat 195+ Bendera..." disabled autocomplete="off">
-            <div class="btns">
-                <button class="btn b-cek" id="btn-cek">CEK</button>
-                <button class="btn b-hint" id="btn-hint">💡</button>
-                <button class="btn b-skip" id="btn-skip">⏩</button>
+
+            <div class="options-grid" id="options">
+                </div>
+
+            <div class="control-btns">
+                <button class="btn b-hint" id="btn-hint">💡 PETUNJUK</button>
+                <button class="btn b-skip" id="btn-skip">⏩ LEWATI</button>
             </div>
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span class="status-tag">BILINGUAL & TRIPLE HINT</span>
+            <span class="status-tag">MODE: PILIHAN GANDA</span>
         </div>
     </div>
 
 <script>
     let allCountries = [];
     let availableCountries = [];
-    let cur = {}, score = 0, currentIndex = -1;
+    let cur = {}, score = 0, isAnswering = false;
 
     async function initGame() {
         try {
-            // Mengambil field tambahan 'subregion' dan 'borders' untuk hint lokasi
             const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,translations,continents,capital,subregion,borders');
             const data = await res.json();
             
-            allCountries = data.map(c => {
-                const names = new Set();
-                // Tambahkan semua kemungkinan nama (Indonesia & Inggris)
-                if (c.translations.idn) {
-                    names.add(c.translations.idn.common.toLowerCase());
-                    names.add(c.translations.idn.official.toLowerCase());
-                }
-                names.add(c.name.common.toLowerCase());
-                names.add(c.name.official.toLowerCase());
-                
-                return {
-                    validNames: Array.from(names),
-                    displayName: c.translations.idn ? c.translations.idn.common : c.name.common,
-                    code: c.cca2.toLowerCase(),
-                    cont: c.continents[0],
-                    cap: c.capital && c.capital[0] ? c.capital[0] : "Tidak Diketahui",
-                    sub: c.subregion || "Wilayah Global",
-                    borders: c.borders || []
-                };
-            });
+            allCountries = data.map(c => ({
+                displayName: c.translations.idn ? c.translations.idn.common : c.name.common,
+                code: c.cca2.toLowerCase(),
+                cont: c.continents[0],
+                cap: c.capital && c.capital[0] ? c.capital[0] : "Tidak Diketahui",
+                sub: c.subregion || "Wilayah Global",
+                borders: c.borders || []
+            }));
 
             availableCountries = [...allCountries];
-            document.getElementById('ans-in').disabled = false;
-            document.getElementById('ans-in').placeholder = "Ketik Nama Negara...";
             loadQ();
         } catch (e) {
-            toast("Gagal memuat database!", "var(--red)");
+            toast("Koneksi Internet Bermasalah!", "var(--red)");
         }
     }
 
     function loadQ() {
         if (availableCountries.length === 0) {
-            toast("🎉 SEMUA NEGARA TELAH DIJAWAB!", "var(--accent)");
+            toast("🎉 SEMUA NEGARA TERJAWAB!", "var(--accent)");
             availableCountries = [...allCountries]; 
         }
         
-        currentIndex = Math.floor(Math.random() * availableCountries.length);
-        cur = availableCountries[currentIndex];
+        isAnswering = false;
+        const index = Math.floor(Math.random() * availableCountries.length);
+        cur = availableCountries[index];
+        cur.indexInAvailable = index;
 
+        // Tampilkan Gambar
         const img = document.getElementById('q-img');
         const loader = document.getElementById('loader');
-        
         img.style.display = 'none';
         loader.style.display = 'block';
         img.src = `https://flagcdn.com/w640/${cur.code}.png`;
-        
-        img.onload = () => {
-            img.style.display = 'block';
-            loader.style.display = 'none';
-        };
+        img.onload = () => { img.style.display = 'block'; loader.style.display = 'none'; };
 
-        document.getElementById('ans-in').value = '';
+        // Buat Pilihan Jawaban
+        generateOptions();
+
+        // Reset Hint
         document.getElementById('h-continent').style.display = 'none';
         document.getElementById('h-capital').style.display = 'none';
         document.getElementById('h-loc').style.display = 'none';
-        document.getElementById('ans-in').focus();
     }
 
-    function checkAnswer() {
-        const input = document.getElementById('ans-in').value.toLowerCase().trim();
-        if (!input) return;
+    function generateOptions() {
+        const optionsBox = document.getElementById('options');
+        optionsBox.innerHTML = '';
 
-        // Cek apakah input ada di dalam kumpulan nama valid (ID/EN)
-        const isCorrect = cur.validNames.includes(input);
+        // Ambil 3 jawaban salah secara acak
+        let choices = [cur];
+        while (choices.length < 4) {
+            let randomCountry = allCountries[Math.floor(Math.random() * allCountries.length)];
+            if (!choices.find(c => c.code === randomCountry.code)) {
+                choices.push(randomCountry);
+            }
+        }
 
-        if (isCorrect) {
+        // Acak posisi jawaban
+        choices.sort(() => Math.random() - 0.5);
+
+        choices.forEach(country => {
+            const btn = document.createElement('button');
+            btn.className = 'opt-btn';
+            btn.innerText = country.displayName;
+            btn.onclick = () => handleChoice(btn, country.code);
+            optionsBox.appendChild(btn);
+        });
+    }
+
+    function handleChoice(btn, selectedCode) {
+        if (isAnswering) return;
+        isAnswering = true;
+
+        if (selectedCode === cur.code) {
+            btn.classList.add('correct');
             score += 10;
             document.getElementById('score').innerText = score;
-            toast(`✅ BENAR! <br><small>${cur.displayName.toUpperCase()}</small>`, "var(--green)");
-            availableCountries.splice(currentIndex, 1);
+            toast("✅ BENAR!", "var(--green)");
+            
+            // Hapus dari antrean agar tidak muncul lagi
+            availableCountries.splice(cur.indexInAvailable, 1);
             setTimeout(loadQ, 1200);
         } else {
-            toast("❌ SALAH! COBA LAGI", "var(--red)");
+            btn.classList.add('wrong');
+            toast("❌ SALAH!", "var(--red)");
+            // Cari tombol yang benar untuk memberi tahu user
+            Array.from(document.querySelectorAll('.opt-btn')).forEach(b => {
+                // Sederhana: jika teks cocok dengan cur.displayName
+                if(b.innerText === cur.displayName) b.classList.add('correct');
+            });
+            setTimeout(loadQ, 1500);
         }
     }
 
@@ -166,7 +186,7 @@
             h2.innerText = "🏛️ IBU KOTA: " + cur.cap;
             h2.style.display = 'block';
         } else if (h3.style.display === 'none') {
-            h3.innerText = "📍 LOKASI: Negara ini berada di " + cur.sub + (cur.borders.length > 0 ? " dan bertetangga dengan " + cur.borders.slice(0,2).join(", ") : "");
+            h3.innerText = "📍 LOKASI: Di " + cur.sub + (cur.borders.length > 0 ? ", dekat " + cur.borders.slice(0,2).join(", ") : "");
             h3.style.display = 'block';
         }
     }
@@ -180,13 +200,11 @@
         const p = document.getElementById('pop');
         p.innerHTML = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1800);
+        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
     }
 
-    document.getElementById('btn-cek').addEventListener('click', checkAnswer);
     document.getElementById('btn-hint').addEventListener('click', toggleHint);
     document.getElementById('btn-skip').addEventListener('click', loadQ);
-    document.getElementById('ans-in').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAnswer(); });
 
     initGame();
 </script>
