@@ -3,41 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG - Official</title>
+    <title>GLOBAL FLAG - Fix Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
         .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 15px; }
-        .header h1 { text-align: center; font-size: 2rem; color: #A29BFE; margin: 15px 0; font-weight: 800; text-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .header h1 { text-align: center; font-size: 2rem; color: #A29BFE; margin: 15px 0; font-weight: 800; letter-spacing: 2px; }
         
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
         
-        /* Box Gambar yang Stabil */
-        .img-box { width: 100%; height: 210px; border-radius: 20px; background: #000; margin-bottom: 20px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
+        .img-box { width: 100%; height: 210px; border-radius: 20px; background: #000; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
         #q-img { max-width: 90%; max-height: 90%; object-fit: contain; display: none; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5)); }
         
-        /* Loading Spinner */
+        /* Loader Spinner */
         .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; position: absolute; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .hint-text { position: absolute; top: 110px; left: 50%; transform: translateX(-50%); width: 85%; background: rgba(108, 92, 231, 0.95); padding: 12px; border-radius: 15px; font-size: 0.9rem; display: none; color: white; font-weight: 700; z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border: 1px solid white; }
+        /* FIX POSISI HINT: Di bawah gambar, proporsional */
+        .hint-container { height: 45px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; }
+        .hint-text { background: rgba(108, 92, 231, 0.2); border: 1px solid var(--accent); color: #A29BFE; padding: 8px 15px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: none; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(108, 92, 231, 0.3); }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(108, 92, 231, 0.2); }
 
         .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
         .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn:active { transform: scale(0.92); }
-        .b-cek { background: var(--green); box-shadow: 0 4px 0 #008f72; }
-        .b-hint { background: #EAB308; font-size: 1.5rem; box-shadow: 0 4px 0 #b88d06; }
-        .b-skip { background: #475569; font-size: 1.5rem; box-shadow: 0 4px 0 #333f4f; }
+        .btn:active { transform: scale(0.95); }
+        .b-cek { background: var(--green); }
+        .b-hint { background: #EAB308; font-size: 1.5rem; }
+        .b-skip { background: #475569; font-size: 1.5rem; }
 
         .score-box { display: flex; justify-content: space-between; font-weight: 800; color: #94A3B8; padding: 5px 10px; align-items: center; }
-        .lang-tag { font-size: 0.7rem; background: #334155; padding: 5px 10px; border-radius: 8px; color: #A29BFE; }
+        .status-tag { font-size: 0.7rem; background: #334155; padding: 5px 12px; border-radius: 10px; color: #A29BFE; }
         
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; color: white; font-weight: 800; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; color: white; font-weight: 800; }
     </style>
 </head>
 <body>
@@ -45,11 +47,15 @@
     <div class="app">
         <div class="header"><h1>GLOBAL FLAG</h1></div>
         <div class="game-card">
-            <div id="hint-ui" class="hint-text"></div>
             <div class="img-box">
                 <div id="loader" class="loader"></div>
                 <img id="q-img" src="" alt="Bendera">
             </div>
+            
+            <div class="hint-container">
+                <div id="hint-ui" class="hint-text"></div>
+            </div>
+
             <input type="text" id="ans-in" placeholder="Nama Negara (ID / EN)..." autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
@@ -59,14 +65,13 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span class="lang-tag">BILINGUAL ID / EN</span>
+            <span class="status-tag">BILINGUAL ACTIVE</span>
         </div>
     </div>
 
 <script>
     let countries = [], cur = {}, score = 0;
 
-    // Inisialisasi: Mengambil data 195+ negara
     async function init() {
         try {
             const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,translations,continents');
@@ -78,24 +83,18 @@
                 continent: c.continents[0]
             }));
             loadQ();
-        } catch (e) {
-            toast("Koneksi Error!", "var(--red)");
-        }
+        } catch (e) { toast("Gagal memuat data!", "var(--red)"); }
     }
 
     function loadQ() {
         if (countries.length === 0) return;
-        
         cur = countries[Math.floor(Math.random() * countries.length)];
         const img = document.getElementById('q-img');
         const loader = document.getElementById('loader');
         
-        // Sembunyikan gambar lama & tampilkan loader
         img.style.display = 'none';
         loader.style.display = 'block';
-        
-        // Gunakan FlagCDN (Lebih stabil dari API manapun)
-        img.src = `https://flagcdn.com/w320/${cur.code}.png`;
+        img.src = `https://flagcdn.com/w640/${cur.code}.png`; // Menggunakan resolusi lebih tinggi (640)
         
         img.onload = () => {
             img.style.display = 'block';
@@ -111,11 +110,7 @@
         let input = document.getElementById('ans-in').value.toLowerCase().trim();
         if (!input) return;
 
-        let targetID = cur.id.toLowerCase();
-        let targetEN = cur.en.toLowerCase();
-
-        // Logika 2 Bahasa: Jika benar di salah satu bahasa, maka skor bertambah
-        if (input === targetID || input === targetEN) {
+        if (input === cur.id.toLowerCase() || input === cur.en.toLowerCase()) {
             score += 10;
             document.getElementById('score').innerText = score;
             toast(`✅ BENAR! (${cur.id})`, "var(--green)");
@@ -127,12 +122,12 @@
 
     function toggleH() {
         const h = document.getElementById('hint-ui');
-        h.innerText = "💡 PETUNJUK: Berada di Benua " + translateContinent(cur.continent);
+        h.innerText = "💡 BENUA: " + translateContinent(cur.continent);
         h.style.display = h.style.display === 'none' ? 'block' : 'none';
     }
 
     function translateContinent(cont) {
-        const map = { "Asia":"Asia", "Europe":"Eropa", "Africa":"Afrika", "Oceania":"Oseania", "North America":"Amerika Utara", "South America":"Amerika Selatan", "Antarctica":"Antarktika" };
+        const map = { "Asia":"Asia", "Europe":"Eropa", "Africa":"Afrika", "Oceania":"Oseania", "North America":"Amerika Utara", "South America":"Amerika Selatan" };
         return map[cont] || cont;
     }
 
@@ -143,13 +138,8 @@
         setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
     }
 
-    // Jalankan game
     init();
-
-    // Support Tombol Enter di Keyboard
-    document.getElementById('ans-in').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') check();
-    });
+    document.getElementById('ans-in').addEventListener('keypress', (e) => { if (e.key === 'Enter') check(); });
 </script>
 </body>
 </html>
