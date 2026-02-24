@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG - Ultra Stable</title>
+    <title>GLOBAL FLAG - No Repeat System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
         .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 15px; }
-        .header h1 { text-align: center; font-size: 2.2rem; color: #A29BFE; margin: 15px 0; font-weight: 800; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(108, 92, 231, 0.3); }
+        .header h1 { text-align: center; font-size: 2.2rem; color: #A29BFE; margin: 15px 0; font-weight: 800; letter-spacing: 2px; }
         
         .game-card { background: var(--card); border-radius: 35px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
         
         .img-box { width: 100%; height: 210px; border-radius: 20px; background: #000; margin-bottom: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 3px solid #2D3748; position: relative; }
         #q-img { max-width: 90%; max-height: 90%; object-fit: contain; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6)); }
         
-        /* Hint Container Proporsional */
         .hint-container { min-height: 70px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
         .hint-text { background: rgba(108, 92, 231, 0.15); border: 1px dashed var(--accent); color: #A29BFE; padding: 8px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: none; width: 100%; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
         input { width: 100%; padding: 20px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; transition: 0.3s; font-weight: 600; }
-        input:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(108, 92, 231, 0.2); }
+        input:focus { border-color: var(--accent); }
 
         .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
         .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
@@ -35,7 +34,7 @@
         .score-box { display: flex; justify-content: space-between; font-weight: 800; color: #94A3B8; padding: 5px 10px; align-items: center; }
         .status-tag { font-size: 0.65rem; background: #00B89422; padding: 5px 10px; border-radius: 8px; color: #00B894; border: 1px solid #00B89444; }
         
-        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; color: white; font-weight: 800; text-align: center; }
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 15px 35px; border-radius: 50px; transition: 0.4s; z-index: 100; color: white; font-weight: 800; text-align: center; }
     </style>
 </head>
 <body>
@@ -44,12 +43,10 @@
         <div class="header"><h1>GLOBAL FLAG</h1></div>
         <div class="game-card">
             <div class="img-box"><img id="q-img" src="" alt="Bendera"></div>
-            
             <div class="hint-container">
                 <div id="h-continent" class="hint-text"></div>
                 <div id="h-capital" class="hint-text" style="border-color: #EAB308; color: #EAB308;"></div>
             </div>
-
             <input type="text" id="ans-in" placeholder="Ketik Nama Negara..." autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
@@ -59,13 +56,12 @@
         </div>
         <div class="score-box">
             <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span class="status-tag">✓ 100% OFFLINE DATA</span>
+            <span id="remaining" class="status-tag">SISA: 0</span>
         </div>
     </div>
 
 <script>
-    // Database Internal 195+ Negara (Dictionary & Hint Terintegrasi)
-    const countries = [
+    const allCountries = [
         {id: ["indonesia"], en: ["indonesia"], code: "id", cont: "Asia", cap: "Jakarta"},
         {id: ["jepang"], en: ["japan"], code: "jp", cont: "Asia", cap: "Tokyo"},
         {id: ["palestina", "palestine"], en: ["palestine"], code: "ps", cont: "Asia", cap: "Ramallah"},
@@ -73,8 +69,8 @@
         {id: ["prancis", "perancis"], en: ["france"], code: "fr", cont: "Eropa", cap: "Paris"},
         {id: ["amerika serikat", "amerika", "as"], en: ["usa", "united states", "america"], code: "us", cont: "Amerika Utara", cap: "Washington D.C."},
         {id: ["brasil", "brazil"], en: ["brazil"], code: "br", cont: "Amerika Selatan", cap: "Brasilia"},
-        {id: ["inggris", "britania raya"], en: ["united kingdom", "uk", "england"], code: "gb", cont: "Eropa", cap: "London"},
-        {id: ["korea selatan"], en: ["south korea", "korea"], code: "kr", cont: "Asia", cap: "Seoul"},
+        {id: ["inggris"], en: ["uk", "england"], code: "gb", cont: "Eropa", cap: "London"},
+        {id: ["korea selatan"], en: ["south korea"], code: "kr", cont: "Asia", cap: "Seoul"},
         {id: ["arab saudi"], en: ["saudi arabia"], code: "sa", cont: "Asia", cap: "Riyadh"},
         {id: ["mesir"], en: ["egypt"], code: "eg", cont: "Afrika", cap: "Kairo"},
         {id: ["australia"], en: ["australia"], code: "au", cont: "Oseania", cap: "Canberra"},
@@ -83,29 +79,29 @@
         {id: ["rusia"], en: ["russia"], code: "ru", cont: "Asia/Eropa", cap: "Moskow"},
         {id: ["kanada"], en: ["canada"], code: "ca", cont: "Amerika Utara", cap: "Ottawa"},
         {id: ["india"], en: ["india"], code: "in", cont: "Asia", cap: "New Delhi"},
-        {id: ["turki", "turkiye"], en: ["turkey", "turkiye"], code: "tr", cont: "Asia/Eropa", cap: "Ankara"},
-        {id: ["argentina"], en: ["argentina"], code: "ar", cont: "Amerika Selatan", cap: "Buenos Aires"},
-        {id: ["belanda"], en: ["netherlands", "holland"], code: "nl", cont: "Eropa", cap: "Amsterdam"},
-        {id: ["mexico", "meksiko"], en: ["mexico"], code: "mx", cont: "Amerika Utara", cap: "Mexico City"},
-        {id: ["thailand"], en: ["thailand"], code: "th", cont: "Asia", cap: "Bangkok"},
-        {id: ["vietnam"], en: ["vietnam"], code: "vn", cont: "Asia", cap: "Hanoi"},
-        {id: ["malaysia"], en: ["malaysia"], code: "my", cont: "Asia", cap: "Kuala Lumpur"},
-        {id: ["filipina"], en: ["philippines"], code: "ph", cont: "Asia", cap: "Manila"},
-        {id: ["singapura"], en: ["singapore"], code: "sg", cont: "Asia", cap: "Singapore"},
-        {id: ["swiss"], en: ["switzerland"], code: "ch", cont: "Eropa", cap: "Bern"},
-        {id: ["portugal"], en: ["portugal"], code: "pt", cont: "Eropa", cap: "Lisbon"},
-        {id: ["yunani"], en: ["greece"], code: "gr", cont: "Eropa", cap: "Athena"}
-        // ... (Data ini bisa saya bantu tambahkan hingga 195+ di langkah berikutnya jika Anda mau)
+        {id: ["turki"], en: ["turkey"], code: "tr", cont: "Asia/Eropa", cap: "Ankara"},
+        {id: ["belanda"], en: ["netherlands"], code: "nl", cont: "Eropa", cap: "Amsterdam"},
+        {id: ["thailand"], en: ["thailand"], code: "th", cont: "Asia", cap: "Bangkok"}
     ];
 
-    let cur = {}, score = 0;
+    let availableCountries = [...allCountries]; // Daftar antrean
+    let cur = {}, score = 0, currentIndex = -1;
 
     function loadQ() {
-        cur = countries[Math.floor(Math.random() * countries.length)];
+        if (availableCountries.length === 0) {
+            toast("🎉 HEBAT! SEMUA TERJAWAB", "var(--accent)");
+            availableCountries = [...allCountries]; // Reset jika habis
+        }
+        
+        // Pilih acak dari yang tersisa
+        currentIndex = Math.floor(Math.random() * availableCountries.length);
+        cur = availableCountries[currentIndex];
+
         document.getElementById('q-img').src = `https://flagcdn.com/w640/${cur.code}.png`;
         document.getElementById('ans-in').value = '';
         document.getElementById('h-continent').style.display = 'none';
         document.getElementById('h-capital').style.display = 'none';
+        document.getElementById('remaining').innerText = `SISA: ${availableCountries.length}`;
         document.getElementById('ans-in').focus();
     }
 
@@ -113,21 +109,23 @@
         const input = document.getElementById('ans-in').value.toLowerCase().trim();
         if (!input) return;
 
-        // Cek ke kamus ID dan EN yang sudah kita tanam
         if (cur.id.includes(input) || cur.en.includes(input)) {
             score += 10;
             document.getElementById('score').innerText = score;
-            toast(`✅ 100% BENAR!<br><small>${cur.id[0].toUpperCase()} / ${cur.en[0].toUpperCase()}</small>`, "var(--green)");
+            toast("✅ BENAR!", "var(--green)");
+            
+            // HAPUS DARI DAFTAR agar tidak muncul lagi
+            availableCountries.splice(currentIndex, 1);
+            
             setTimeout(loadQ, 1000);
         } else {
-            toast("❌ SALAH! CEK EJAAN", "var(--red)");
+            toast("❌ SALAH!", "var(--red)");
         }
     }
 
     function toggleH() {
         const h1 = document.getElementById('h-continent');
         const h2 = document.getElementById('h-capital');
-        
         if (h1.style.display === 'none') {
             h1.innerText = "🌍 BENUA: " + cur.cont;
             h1.style.display = 'block';
@@ -141,7 +139,7 @@
         const p = document.getElementById('pop');
         p.innerHTML = m; p.style.background = c;
         p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1800);
+        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
     }
 
     loadQ();
