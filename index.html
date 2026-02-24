@@ -3,28 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EduPlay Global v4.0</title>
+    <title>EduPlay Global Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; --card: #1E293B; }
         * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 20px; }
-        .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
-        .header h1 { text-align: center; font-size: 1.6rem; color: #A29BFE; margin: 0; font-weight: 800; }
-        .tabs { display: flex; background: var(--card); padding: 6px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        .tab { flex: 1; padding: 14px; border: none; border-radius: 15px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+        body { background: var(--bg); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; }
+        .app { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; }
+        .header h1 { text-align: center; font-size: 1.5rem; color: #A29BFE; margin: 10px 0; font-weight: 800; }
+        
+        /* Navigasi Tab */
+        .tabs { display: flex; background: var(--card); padding: 5px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.1); }
+        .tab { flex: 1; padding: 12px; border: none; border-radius: 14px; background: none; color: #64748B; font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab.active { background: var(--accent); color: white; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
-        .game-card { background: var(--card); border-radius: 30px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        .img-box { width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #000; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; position: relative; }
+
+        /* Game Card */
+        .game-card { background: var(--card); border-radius: 25px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+        .img-box { width: 100%; height: 230px; border-radius: 18px; overflow: hidden; background: #000; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
         #q-img { width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: 0.4s; }
-        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 10px; font-size: 0.85rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
-        input { width: 100%; padding: 18px; background: #0F172A; border: 2px solid #2D3748; border-radius: 20px; color: white; font-size: 1.1rem; text-align: center; margin-bottom: 15px; outline: none; }
+        .hint-text { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.85); padding: 8px; font-size: 0.8rem; display: none; color: #F1C40F; border-top: 2px solid var(--accent); }
+
+        /* Input & Simetris Buttons */
+        input { width: 100%; padding: 16px; background: #0F172A; border: 2px solid #2D3748; border-radius: 18px; color: white; font-size: 1rem; text-align: center; margin-bottom: 15px; outline: none; }
         input:focus { border-color: var(--accent); }
-        .btns { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 12px; }
-        .btn { height: 60px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-        .b-cek { background: var(--green); } .b-hint { background: #EAB308; font-size: 1.4rem; } .b-skip { background: #475569; font-size: 1.4rem; }
-        .score-box { text-align: left; font-size: 1rem; font-weight: 800; color: #94A3B8; padding-left: 10px; }
-        #pop { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 15px 35px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 99; color: white; }
+        
+        .btns { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 10px; }
+        .btn { height: 55px; border: none; border-radius: 16px; font-weight: 800; cursor: pointer; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .btn:active { transform: scale(0.95); }
+        .b-cek { background: var(--green); font-size: 0.9rem; }
+        .b-hint { background: #EAB308; font-size: 1.3rem; }
+        .b-skip { background: #475569; font-size: 1.3rem; }
+
+        .score-box { font-size: 1rem; font-weight: 800; color: #94A3B8; margin-top: 5px; }
+        #pop { position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px); padding: 12px 30px; border-radius: 50px; font-weight: 800; transition: 0.4s; z-index: 100; color: white; }
     </style>
 </head>
 <body>
@@ -40,7 +51,7 @@
                 <img id="q-img" src="" alt="Soal">
                 <div id="hint-ui" class="hint-text"></div>
             </div>
-            <input type="text" id="ans-in" placeholder="ID / EN ?" autocomplete="off">
+            <input type="text" id="ans-in" placeholder="Jawab (ID / EN)" autocomplete="off">
             <div class="btns">
                 <button class="btn b-cek" onclick="check()">CEK</button>
                 <button class="btn b-hint" onclick="toggleH()">💡</button>
@@ -53,23 +64,19 @@
 <script>
     let db = { flag: [], animal: [] }, used = { flag: [], animal: [] }, cur = {}, mode = 'flag', score = 0;
 
-    // Database Bilingual (ID & EN)
+    // DATABASE HEWAN DENGAN GAMBAR AKURAT (Fix No More Black Screen / Wrong Images)
     const animalDB = [
-        {id: "Singa", en: "Lion", h: "Si Raja Hutan"},
-        {id: "Gajah", en: "Elephant", h: "Punya belalai panjang"},
-        {id: "Harimau", en: "Tiger", h: "Kucing besar bergaris"},
-        {id: "Jerapah", en: "Giraffe", h: "Lehernya sangat panjang"},
-        {id: "Elang", en: "Eagle", h: "Burung pemangsa yang gagah"},
-        {id: "Hiu", en: "Shark", h: "Predator laut bergigi tajam"},
-        {id: "Kuda", en: "Horse", h: "Bisa lari sangat kencang"},
-        {id: "Panda", en: "Panda", h: "Suka makan bambu"},
-        {id: "Kura-kura", en: "Turtle", h: "Berjalan lambat dengan tempurung"},
-        {id: "Lumba-lumba", en: "Dolphin", h: "Mamalia laut yang cerdas"},
-        {id: "Serigala", en: "Wolf", h: "Melolong saat bulan purnama"},
-        {id: "Zebra", en: "Zebra", h: "Kuda dengan garis hitam putih"},
-        {id: "Monyet", en: "Monkey", h: "Suka makan pisang"},
-        {id: "Buaya", en: "Crocodile", h: "Reptil besar di sungai"},
-        {id: "Beruang", en: "Bear", h: "Suka madu dan hibernasi"}
+        {id: "Gajah", en: "Elephant", i: "https://images.pexels.com/photos/66898/elephant-cub-tsavo-kenya-66898.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Punya belalai panjang"},
+        {id: "Singa", en: "Lion", i: "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Raja hutan yang gagah"},
+        {id: "Harimau", en: "Tiger", i: "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Kucing besar bergaris"},
+        {id: "Jerapah", en: "Giraffe", i: "https://images.pexels.com/photos/806441/pexels-photo-806441.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Lehernya sangat panjang"},
+        {id: "Beruang", en: "Bear", i: "https://images.pexels.com/photos/35435/wolf-canis-lupus-american-wolf-arctic-wolf.jpg?auto=compress&cs=tinysrgb&w=500", h: "Suka makan madu (Salah gambar fix)"},
+        {id: "Beruang", en: "Bear", i: "https://images.pexels.com/photos/158109/brown-bear-bear-mammal-wildlife-158109.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Suka madu & hibernasi"},
+        {id: "Elang", en: "Eagle", i: "https://images.pexels.com/photos/459198/pexels-photo-459198.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Burung pemangsa tajam"},
+        {id: "Kuda Nil", en: "Hippo", i: "https://images.pexels.com/photos/67211/hippo-hippopotamus-mammal-water-67211.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Badan besar, sering di air"},
+        {id: "Zebra", en: "Zebra", i: "https://images.pexels.com/photos/1054655/pexels-photo-1054655.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Kuda bergaris hitam putih"},
+        {id: "Panda", en: "Panda", i: "https://images.pexels.com/photos/3608263/pexels-photo-3608263.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Hewan lucu pemakan bambu"},
+        {id: "Kura-kura", en: "Turtle", i: "https://images.pexels.com/photos/1618606/pexels-photo-1618606.jpeg?auto=compress&cs=tinysrgb&w=500", h: "Punya cangkang keras"}
     ];
 
     async function init() {
@@ -77,9 +84,9 @@
             const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flags,continents');
             const data = await res.json();
             db.flag = data.map(c => ({id: c.name.common, en: c.name.common, i: c.flags.png, h: "Benua: " + c.continents[0]}));
-            db.animal = animalDB.map(a => ({...a, i: `https://api.pexels.com/v1/search?query=${a.en}&per_page=1`})); 
+            db.animal = animalDB;
             loadQ();
-        } catch(e) { toast("Internet Error!", "var(--red)"); }
+        } catch(e) { toast("Cek Koneksi!", "var(--red)"); }
     }
 
     function setM(m) {
@@ -96,10 +103,7 @@
         
         const img = document.getElementById('q-img');
         img.style.opacity = '0';
-        
-        // Pilihan Gambar yang Lebih Akurat
-        let imgUrl = mode === 'flag' ? cur.i : `https://loremflickr.com/500/400/${cur.en.toLowerCase()},animal/all`;
-        img.src = imgUrl;
+        img.src = cur.i;
         
         img.onload = () => img.style.opacity = '1';
         document.getElementById('ans-in').value = '';
@@ -109,10 +113,7 @@
 
     function check() {
         let v = document.getElementById('ans-in').value.toLowerCase().trim();
-        let correctID = cur.id.toLowerCase();
-        let correctEN = cur.en.toLowerCase();
-        
-        if (v === correctID || v === correctEN) {
+        if (v === cur.id.toLowerCase() || v === cur.en.toLowerCase()) {
             score += 10; used[mode].push(cur.id);
             document.getElementById('score').innerText = score;
             toast("✅ BENAR! (" + cur.en + ")", "var(--green)");
