@@ -2,249 +2,595 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GLOBAL FLAG PRO - Educational Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLOBAL FLAG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --accent: #6C5CE7; --green: #00B894; --red: #FF7675; --bg: #0F172A; 
-            --card: rgba(30, 41, 59, 0.7); --border: rgba(255, 255, 255, 0.1);
+        * {
+            font-family: 'Inter', sans-serif;
         }
-
-        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at top, #1E293B, #0F172A); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px; overflow-x: hidden; }
         
-        .app { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; animation: fadeIn 0.8s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .lang-switch { display: flex; background: var(--card); border-radius: 12px; padding: 4px; border: 1px solid var(--border); }
-        .lang-btn { border: none; background: none; color: #94A3B8; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .lang-btn.active { background: var(--accent); color: white; box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3); }
-
-        .header h1 { font-size: 1.8rem; background: linear-gradient(to right, #A29BFE, #FFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; font-weight: 800; }
-
-        .game-card { background: var(--card); backdrop-filter: blur(10px); border-radius: 30px; padding: 20px; border: 1px solid var(--border); text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); position: relative; transition: 0.4s; }
-        .game-card.new-q { animation: slideNext 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes slideNext { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-        
-        .img-box { width: 100%; height: 180px; border-radius: 20px; background: rgba(0,0,0,0.2); margin-bottom: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
-        #q-img { max-width: 90%; max-height: 85%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4)); transition: 0.3s; }
-
-        .hint-container { min-height: 95px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 6px; }
-        .hint-text { background: rgba(108, 92, 231, 0.1); border-left: 4px solid var(--accent); color: #D6D1FF; padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 600; display: none; text-align: left; animation: slideIn 0.4s ease forwards; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .opt-btn { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 18px; color: white; 
-            min-height: 65px; padding: 10px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; text-align: center;
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
         }
-        .opt-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); transform: translateY(-2px); }
-        .opt-btn.correct { background: var(--green) !important; border-color: #00D1A0; box-shadow: 0 0 20px rgba(0, 184, 148, 0.4); animation: pulse 0.5s ease; }
-        .opt-btn.wrong { background: var(--red) !important; border-color: #FF9E9E; animation: shake 0.4s ease; }
-
-        @keyframes shake { 0%,100% {transform:translateX(0)} 25% {transform:translateX(-5px)} 75% {transform:translateX(5px)} }
-        @keyframes pulse { 0% {transform:scale(1)} 50% {transform:scale(1.05)} 100% {transform:scale(1)} }
-
-        .control-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .btn { height: 50px; border: none; border-radius: 18px; font-weight: 800; cursor: pointer; color: white; transition: 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .b-hint { background: #EAB308; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3); }
-        .b-skip { background: #475569; }
-        .btn:active { transform: scale(0.95); }
-
-        .score-box { display: flex; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 15px 25px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; border: 1px solid var(--border); }
         
-        #pop { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-150px); padding: 12px 30px; border-radius: 50px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; color: white; font-weight: 800; text-align: center; pointer-events: none; }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
         
-        .loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .main-container {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .glass-card {
+            background: linear-gradient(145deg, rgba(20,20,20,0.9), rgba(10,10,10,0.95));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        .flag-showcase {
+            background: linear-gradient(145deg, rgba(30,30,30,0.8), rgba(15,15,15,0.9));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6),
+                        inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .flag-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255,255,255,0.03) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            animation: shimmer 6s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .option-btn {
+            background: linear-gradient(145deg, rgba(30,30,30,0.8), rgba(20,20,20,0.9));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.5s;
+        }
+        
+        .option-btn:hover::before {
+            left: 100%;
+        }
+        
+        .option-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5),
+                        inset 0 1px 0 rgba(255,255,255,0.1);
+            background: linear-gradient(145deg, rgba(40,40,40,0.9), rgba(25,25,25,0.95));
+        }
+        
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .hint-btn {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .hint-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .hint-box {
+            background: linear-gradient(145deg, rgba(35,35,35,0.9), rgba(25,25,25,0.95));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .correct-answer {
+            background: linear-gradient(145deg, #166534, #14532d) !important;
+            border-color: rgba(74, 222, 128, 0.5) !important;
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.3) !important;
+            animation: correctPulse 0.6s ease;
+        }
+        
+        .wrong-answer {
+            background: linear-gradient(145deg, #991b1b, #7f1d1d) !important;
+            border-color: rgba(248, 113, 113, 0.5) !important;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .title-text {
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .question-text {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .next-btn {
+            background: linear-gradient(135deg, #262626 0%, #171717 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        .glossy-header {
+            background: linear-gradient(180deg, rgba(40,40,40,0.6) 0%, rgba(20,20,20,0.8) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .flag-image {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .flag-image.loaded {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
-    <div id="pop"></div>
-    <div class="app">
-        <div class="top-bar">
-            <div class="header"><h1>GLOBAL FLAG</h1></div>
-            <div class="lang-switch">
-                <button id="btn-id" class="lang-btn active" onclick="setLang('id')">ID</button>
-                <button id="btn-en" class="lang-btn" onclick="setLang('en')">EN</button>
-            </div>
-        </div>
-
-        <div class="game-card" id="game-card">
-            <div class="img-box">
-                <div id="loader" class="loader"></div>
-                <img id="q-img" src="" style="display:none">
+    <div class="main-container min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-2xl rounded-[24px] p-6 md:p-10">
+            
+            <!-- Header dengan nama GLOBAL FLAG -->
+            <div class="glossy-header -mt-6 -mx-6 mb-8 px-6 py-5 rounded-t-[24px]">
+                <h1 class="text-3xl md:text-4xl font-bold title-text text-center tracking-tight">
+                    GLOBAL FLAG
+                </h1>
             </div>
 
-            <div class="hint-container">
-                <div id="h-continent" class="hint-text"></div>
-                <div id="h-capital" class="hint-text" style="border-color: #EAB308;"></div>
-                <div id="h-loc" class="hint-text" style="border-color: #FF7675;"></div>
+            <!-- Flag Display -->
+            <div class="flag-showcase rounded-2xl mb-8 aspect-[16/10] flex items-center justify-center p-4">
+                <img 
+                    id="flag-image"
+                    src="" 
+                    alt="Bendera" 
+                    class="flag-image max-w-full max-h-full object-contain rounded-xl shadow-2xl"
+                    style="filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));"
+                >
             </div>
 
-            <div class="options-grid" id="options"></div>
+            <!-- Question -->
+            <h2 class="text-center text-2xl md:text-3xl font-bold text-white mb-8 question-text">
+                Negara mana ini?
+            </h2>
+            <!-- Hint Section -->
+            <button id="hint-btn" class="w-full mb-6 py-4 rounded-xl hint-btn text-white font-semibold text-lg relative z-10 flex items-center justify-center gap-3">
+                <i class="fas fa-lightbulb text-yellow-400 text-xl"></i>
+                <span id="hint-btn-text">Lihat Petunjuk</span>
+            </button>
 
-            <div class="control-btns">
-                <button class="btn b-hint" onclick="toggleHint()">💡 <span id="txt-hint">PETUNJUK</span></button>
-                <button class="btn b-skip" onclick="loadQ()">⏩ <span id="txt-skip">LEWATI</span></button>
+            <div id="hint-display" class="hint-box hidden mb-6 p-5 rounded-xl">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-gray-400 text-xl mt-1"></i>
+                    <div>
+                        <p class="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-2">Petunjuk</p>
+                        <p class="text-gray-200 text-base font-medium leading-relaxed" id="hint-text"></p>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="score-box">
-            <span>SCORE: <span id="score" style="color:var(--green)">0</span></span>
-            <span style="color:#A29BFE">BEST: <span id="best">0</span></span>
+            <!-- Options Grid -->
+            <div class="grid grid-cols-1 gap-3 mb-6" id="options-container">
+                <!-- Buttons generated via JS -->
+            </div>
+            <!-- Feedback -->
+            <div id="feedback" class="text-center mb-6 h-16 flex items-center justify-center">
+                <p class="text-xl font-semibold opacity-0 transition-all duration-500" id="feedback-text"></p>
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" class="hidden w-full py-4 rounded-xl next-btn text-white font-semibold text-lg transition-all relative z-10 flex items-center justify-center gap-3">
+                <span>Lanjut ke Soal Berikutnya</span>
+                <i class="fas fa-arrow-right"></i>
+            </button>
         </div>
     </div>
 
-<script>
-    let allCountries = [], availableCountries = [], cur = {}, score = 0, isAnswering = false, countryLookup = {};
-    let currentLang = 'id';
-    let currentChoices = []; 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script>
+        const countries = [
+            {c:'id',n:'Indonesia',h:'Negara kepulauan terbesar di dunia dengan lebih dari 17.000 pulau'},
+            {c:'us',n:'Amerika Serikat',h:'Negara adidaya dengan ibu kota Washington D.C.'},
+            {c:'jp',n:'Jepang',h:'Negeri Sakura dengan teknologi canggih dan Mount Fuji'},
+            {c:'kr',n:'Korea Selatan',h:'Negara dengan ibukota Seoul dan budaya K-Pop'},
+            {c:'cn',n:'China',h:'Negara dengan populasi terbesar di dunia'},
+            {c:'in',n:'India',h:'Negara dengan Taj Mahal dan industri Bollywood'},
+            {c:'gb',n:'Inggris',h:'Negara dengan Big Ben dan Royal Family'},
+            {c:'de',n:'Jerman',h:'Negara dengan ibukota Berlin dan industri otomotif kuat'},
+            {c:'fr',n:'Prancis',h:'Negara dengan Menara Eiffel dan ibukota Paris'},
+            {c:'it',n:'Italia',h:'Negara dengan Colosseum dan ibukota Roma'},
+            {c:'es',n:'Spanyol',h:'Negara dengan ibukota Madrid dan budaya Flamenco'},
+            {c:'br',n:'Brasil',h:'Negara terbesar di Amerika Selatan dengan ibukota Brasilia'},
+            {c:'ca',n:'Kanada',h:'Negara terbesar kedua di dunia dengan ibukota Ottawa'},
+            {c:'au',n:'Australia',h:'Negara benua dengan ibukota Canberra dan Sydney Opera House'},
+            {c:'ru',n:'Rusia',h:'Negara terbesar di dunia dengan ibukota Moskow'},
+            {c:'mx',n:'Meksiko',h:'Negara dengan budaya Aztec dan ibukota Mexico City'},
+            {c:'za',n:'Afrika Selatan',h:'Negara dengan 3 ibu kota dan Nelson Mandela'},
+            {c:'eg',n:'Mesir',h:'Negara dengan Piramida dan Sungai Nil'},
+            {c:'ng',n:'Nigeria',h:'Negara terpadat di Afrika dengan ibukota Abuja'},
+            {c:'sa',n:'Arab Saudi',h:'Negara dengan kota suci Mekkah dan Madinah'},
+            {c:'ae',n:'Uni Emirat Arab',h:'Negara dengan Dubai dan Burj Khalifa'},
+            {c:'tr',n:'Turki',h:'Negara yang menghubungkan Eropa dan Asia dengan ibukota Ankara'},
+            {c:'gr',n:'Yunani',h:'Negara dengan Athena dan sejarah Yunani kuno'},
+            {c:'nl',n:'Belanda',h:'Negara dengan kincir angin dan ibukota Amsterdam'},
+            {c:'be',n:'Belgia',h:'Negara dengan ibukota Brussel dan markas NATO'},
+            {c:'ch',n:'Swiss',h:'Negara netral dengan ibukota Bern dan pegunungan Alpen'},
+            {c:'se',n:'Swedia',h:'Negara Skandinavia dengan ibukota Stockholm'},
+            {c:'no',n:'Norwegia',h:'Negara dengan fjord dan ibukota Oslo'},
+            {c:'fi',n:'Finlandia',h:'Negara dengan ibukota Helsinki dan Santa Claus'},
+            {c:'dk',n:'Denmark',h:'Negara dengan ibukota Kopenhagen dan Lego'},
+            {c:'pl',n:'Polandia',h:'Negara dengan ibukota Warsawa dan sejarah Perang Dunia'},
+            {c:'ua',n:'Ukraina',h:'Negara dengan ibukota Kiev dan ladang gandum'},
+            {c:'pt',n:'Portugal',h:'Negara dengan ibukota Lisboa dan sejarah penjelajahan'},
+            {c:'ar',n:'Argentina',h:'Negara dengan tango dan ibukota Buenos Aires'},
+            {c:'cl',n:'Chili',h:'Negara panjang di Amerika Selatan dengan ibukota Santiago'},
+            {c:'co',n:'Kolombia',h:'Negara dengan ibukota Bogota dan kopi'},
+            {c:'pe',n:'Peru',h:'Negara dengan Machu Picchu dan ibukota Lima'},
+            {c:'th',n:'Thailand',h:'Negara dengan ibukota Bangkok dan kuil Buddha'},
+            {c:'vn',n:'Vietnam',h:'Negara dengan ibukota Hanoi dan Teluk Ha Long'},
+            {c:'my',n:'Malaysia',h:'Negara dengan Menara Petronas dan ibukota Kuala Lumpur'},
+            {c:'sg',n:'Singapura',h:'Negara kota dengan Merlion dan taman Gardens by the Bay'},
+            {c:'ph',n:'Filipina',h:'Negara kepulauan dengan ibukota Manila'},
+            {c:'nz',n:'Selandia Baru',h:'Negara dengan ibukota Wellington dan Lord of the Rings'},
+            {c:'ie',n:'Irlandia',h:'Negara dengan ibukota Dublin dan shamrock'},
+            {c:'at',n:'Austria',h:'Negara dengan ibukota Wina dan musik klasik'},
+            {c:'cz',n:'Ceko',h:'Negara dengan ibukota Praha dan kastil'},
+            {c:'hu',n:'Hungaria',h:'Negara dengan ibukota Budapest dan Danube'},
+            {c:'ro',n:'Romania',h:'Negara dengan ibukota Bucharest dan Transylvania'},
+            {c:'il',n:'Israel',h:'Negara dengan Yerusalem dan Tel Aviv'},
+            {c:'pk',n:'Pakistan',h:'Negara dengan ibukota Islamabad dan pegunungan'},
+            {c:'bd',n:'Bangladesh',h:'Negara dengan ibukota Dhaka dan delta sungai'},
+            {c:'lk',n:'Sri Lanka',h:'Negara pulau dengan ibukota Colombo dan teh Ceylon'},
+            {c:'mm',n:'Myanmar',h:'Negara dengan ibukota Naypyidaw dan pagoda'},
+            {c:'kh',n:'Kamboja',h:'Negara dengan Angkor Wat dan ibukota Phnom Penh'},
+            {c:'la',n:'Laos',h:'Negara dengan ibukota Vientiane dan Sungai Mekong'},
+            {c:'bn',n:'Brunei',h:'Negara kecil di Borneo dengan ibukota Bandar Seri Begawan'},
+            {c:'mn',n:'Mongolia',h:'Negara dengan ibukota Ulaanbaatar dan Genghis Khan'},
+            {c:'kz',n:'Kazakhstan',h:'Negara terbesar di Asia Tengah dengan ibukota Astana'},
+            {c:'uz',n:'Uzbekistan',h:'Negara dengan Samarkand dan ibukota Tashkent'},
+            {c:'iq',n:'Irak',h:'Negara dengan Baghdad dan sejarah Mesopotamia'},
+            {c:'ir',n:'Iran',h:'Negara dengan Teheran dan peradaban Persia'},
+            {c:'af',n:'Afghanistan',h:'Negara dengan ibukota Kabul dan pegunungan Hindu Kush'},
+            {c:'ye',n:'Yaman',h:'Negara dengan ibukota Sanaa dan Laut Merah'},
+            {c:'sy',n:'Suriah',h:'Negara dengan Damaskus, salah satu kota tertua di dunia'},
+            {c:'jo',n:'Yordania',h:'Negara dengan Petra dan ibukota Amman'},
+            {c:'lb',n:'Lebanon',h:'Negara dengan ibukota Beirut dan pegunungan'},
+            {c:'kw',n:'Kuwait',h:'Negara kecil di Teluk Persia dengan ibukota Kuwait City'},
+            {c:'qa',n:'Qatar',h:'Negara dengan ibukota Doha dan Piala Dunia 2022'},
+            {c:'bh',n:'Bahrain',h:'Negara pulau di Teluk Persia dengan ibukota Manama'},
+            {c:'om',n:'Oman',h:'Negara dengan ibukota Muscat dan gurun'},
+            {c:'ma',n:'Maroko',h:'Negara dengan Marrakech dan ibukota Rabat'},
+            {c:'dz',n:'Aljazair',h:'Negara terbesar di Afrika dengan ibukota Algiers'},
+            {c:'tn',n:'Tunisia',h:'Negara dengan Carthage dan ibukota Tunis'},
+            {c:'ly',n:'Libya',h:'Negara dengan ibukota Tripoli dan Laut Mediterania'},
+            {c:'sd',n:'Sudan',h:'Negara dengan ibukota Khartoum dan Sungai Nil'},
+            {c:'et',n:'Ethiopia',h:'Negara dengan Addis Ababa dan peradaban kuno'},
+            {c:'gh',n:'Ghana',h:'Negara dengan ibukota Accra dan pesisir Emas'},
+            {c:'ci',n:'Pantai Gading',h:'Negara dengan ibukota Yamoussoukro dan Abidjan'},
+            {c:'sn',n:'Senegal',h:'Negara dengan ibukota Dakar dan pulau Goree'},
+            {c:'cm',n:'Kamerun',h:'Negara dengan ibukota Yaounde dan gunung'},
+            {c:'cd',n:'Kongo',h:'Negara dengan Kinshasa dan Sungai Kongo'},
+            {c:'ao',n:'Angola',h:'Negara dengan ibukota Luanda dan minyak'},
+            {c:'mz',n:'Mozambik',h:'Negara dengan ibukota Maputo dan Samudra Hindia'},
+            {c:'zw',n:'Zimbabwe',h:'Negara dengan Victoria Falls dan ibukota Harare'},
+            {c:'bw',n:'Botswana',h:'Negara dengan ibukota Gaborone dan gurun Kalahari'},
+            {c:'na',n:'Namibia',h:'Negara dengan ibukota Windhoek dan gurun Namib'},
+            {c:'mg',n:'Madagascar',h:'Negara pulau dengan ibukota Antananarivo dan lemur'},
+            {c:'is',n:'Islandia',h:'Negara dengan ibukota Reykjavik dan geyser'},
+            {c:'mt',n:'Malta',h:'Negara pulau kecil dengan ibukota Valletta'},
+            {c:'cy',n:'Siprus',h:'Negara pulau dengan ibukota Nicosia'},
+            {c:'sm',n:'San Marino',h:'Negara terkecil kelima di dunia dengan ibukota San Marino'},
+            {c:'va',n:'Vatikan',h:'Negara terkecil di dunia di dalam Roma'},
+            {c:'mc',n:'Monako',h:'Negara kecil dengan Monte Carlo dan ibukota Monaco'},
+            {c:'li',n:'Liechtenstein',h:'Negara kecil dengan ibukota Vaduz di Alpen'},
+            {c:'lu',n:'Luksemburg',h:'Negara kecil dengan ibukota Luxembourg City'},
+            {c:'ad',n:'Andorra',h:'Negara kecil di Pyrenees dengan ibukota Andorra la Vella'},
+            {c:'me',n:'Montenegro',h:'Negara dengan ibukota Podgorica dan Adriatik'},
+            {c:'rs',n:'Serbia',h:'Negara dengan ibukota Belgrade dan Sungai Danube'},
+            {c:'ba',n:'Bosnia',h:'Negara dengan ibukota Sarajevo dan Mostar'},
+            {c:'hr',n:'Kroasia',h:'Negara dengan ibukota Zagreb dan pantai Adriatik'},
+            {c:'si',n:'Slovenia',h:'Negara dengan ibukota Ljubljana dan gua Postojna'},
+            {c:'sk',n:'Slovakia',h:'Negara dengan ibukota Bratislava dan pegunungan'},
+            {c:'bg',n:'Bulgaria',h:'Negara dengan ibukota Sofia dan mawar'},
+            {c:'md',n:'Moldova',h:'Negara dengan ibukota Chisinau dan wine'},
+            {c:'by',n:'Belarus',h:'Negara dengan ibukota Minsk dan hutan'},
+            {c:'lt',n:'Lituania',h:'Negara dengan ibukota Vilnius dan Baltik'},
+            {c:'lv',n:'Latvia',h:'Negara dengan ibukota Riga dan Art Nouveau'},
+            {c:'ee',n:'Estonia',h:'Negara dengan ibukota Tallinn dan digital'},
+            {c:'ge',n:'Georgia',h:'Negara dengan ibukota Tbilisi dan wine kuno'},
+            {c:'am',n:'Armenia',h:'Negara dengan ibukota Yerevan dan Mount Ararat'},
+            {c:'az',n:'Azerbaijan',h:'Negara dengan ibukota Baku dan api abadi'},
+            {c:'tm',n:'Turkmenistan',h:'Negara dengan ibukota Ashgabat dan gas'},
+            {c:'tj',n:'Tajikistan',h:'Negara dengan ibukota Dushanbe dan pegunungan'},
+            {c:'kg',n:'Kirgizstan',h:'Negara dengan ibukota Bishkek dan Danau Issyk-Kul'},
+            {c:'bt',n:'Bhutan',h:'Negara dengan ibukota Thimphu dan Gross National Happiness'},
+            {c:'np',n:'Nepal',h:'Negara dengan Mount Everest dan ibukota Kathmandu'},
+            {c:'mv',n:'Maladewa',h:'Negara pulau dengan ibukota Male dan resort'},
+            {c:'tl',n:'Timor Leste',h:'Negara termuda di Asia dengan ibukota Dili'},
+            {c:'pg',n:'Papua Nugini',h:'Negara dengan ibukota Port Moresby dan budaya'},
+            {c:'fj',n:'Fiji',h:'Negara pulau dengan ibukota Suva dan resort'},
+            {c:'sb',n:'Kep. Solomon',h:'Negara dengan ibukota Honiara dan Perang Dunia II'},
+            {c:'vu',n:'Vanuatu',h:'Negara dengan ibukota Port Vila dan gunung berapi'},
+            {c:'nc',n:'Kaledonia Baru',h:'Territory Prancis dengan ibukota Noumea'},
+            {c:'pf',n:'Polinesia Prancis',h:'Territory dengan Tahiti dan ibukota Papeete'},
+            {c:'ws',n:'Samoa',h:'Negara dengan ibukota Apia dan budaya Polinesia'},
+            {c:'to',n:'Tonga',h:'Negara dengan ibukota Nukualofa dan kerajaan'},
+            {c:'ki',n:'Kiribati',h:'Negara dengan ibukota Tarawa dan garis khatulistiwa'},
+            {c:'tv',n:'Tuvalu',h:'Negara terkecil kedua dengan ibukota Funafuti'},
+            {c:'nr',n:'Nauru',h:'Negara terkecil ketiga dengan ibukota Yaren'},
+            {c:'pw',n:'Palau',h:'Negara dengan ibukota Ngerulmud dan diving'},
+            {c:'fm',n:'Mikronesia',h:'Negara dengan ibukota Palikir dan atol'},
+            {c:'mh',n:'Kep. Marshall',h:'Negara dengan ibukota Majuro dan atol'},
+            {c:'py',n:'Paraguay',h:'Negara dengan ibukota Asuncion dan Guarani'},
+            {c:'uy',n:'Uruguay',h:'Negara dengan ibukota Montevideo dan tango'},
+            {c:'gy',n:'Guyana',h:'Negara dengan ibukota Georgetown dan air terjun'},
+            {c:'sr',n:'Suriname',h:'Negara dengan ibukota Paramaribo dan hutan'},
+            {c:'gf',n:'Guyana Prancis',h:'Territory Prancis dengan ibukota Cayenne'},
+            {c:'bo',n:'Bolivia',h:'Negara dengan La Paz dan Sucre sebagai ibu kota'},
+            {c:'ec',n:'Ekuador',h:'Negara dengan ibukota Quito dan Galapagos'},
+            {c:'pa',n:'Panama',h:'Negara dengan Terusan Panama dan ibukota Panama City'},
+            {c:'cr',n:'Kosta Rika',h:'Negara dengan ibukota San Jose dan pura vida'},
+            {c:'ni',n:'Nikaragua',h:'Negara dengan ibukota Managua dan danau'},
+            {c:'hn',n:'Honduras',h:'Negara dengan ibukota Tegucigalpa dan Maya'},
+            {c:'sv',n:'El Salvador',h:'Negara dengan ibukota San Salvador dan surf'},
+            {c:'gt',n:'Guatemala',h:'Negara dengan ibukota Guatemala City dan Maya'},
+            {c:'bz',n:'Belize',h:'Negara dengan ibukota Belmopan dan barrier reef'},
+            {c:'cu',n:'Kuba',h:'Negara dengan Havana dan revolusi'},
+            {c:'jm',n:'Jamaika',h:'Negara dengan Kingston dan reggae'},
+            {c:'ht',n:'Haiti',h:'Negara dengan Port-au-Prince dan revolusi'},
+            {c:'do',n:'Republik Dominika',h:'Negara dengan Santo Domingo dan baseball'},
+            {c:'pr',n:'Puerto Riko',h:'Territory AS dengan San Juan dan salsa'},
+            {c:'tt',n:'Trinidad & Tobago',h:'Negara dengan Port of Spain dan carnival'},
+            {c:'bb',n:'Barbados',h:'Negara dengan Bridgetown dan Rihanna'},
+            {c:'gd',n:'Grenada',h:'Negara dengan St. George dan pala'},
+            {c:'vc',n:'St. Vincent',h:'Negara dengan Kingstown dan volcano'},
+            {c:'lc',n:'St. Lucia',h:'Negara dengan Castries dan Pitons'},
+            {c:'dm',n:'Dominika',h:'Negara dengan Roseau dan nature island'},
+            {c:'ag',n:'Antigua',h:'Negara dengan St. Johns dan 365 pantai'},
+            {c:'kn',n:'St. Kitts',h:'Negara dengan Basseterre dan gula'},
+            {c:'bs',n:'Bahama',h:'Negara dengan Nassau dan pantai'},
+            {c:'bm',n:'Bermuda',h:'Territory dengan Hamilton dan segitiga'},
+            {c:'ky',n:'Kep. Cayman',h:'Territory dengan George Town dan diving'},
+            {c:'tc',n:'Kep. Turks & Caicos',h:'Territory dengan Cockburn Town'},
+            {c:'vi',n:'Kep. Virgin AS',h:'Territory AS dengan Charlotte Amalie'},
+            {c:'vg',n:'Kep. Virgin Inggris',h:'Territory dengan Road Town'},
+            {c:'ai',n:'Anguilla',h:'Territory dengan The Valley'},
+            {c:'ms',n:'Montserrat',h:'Territory dengan Plymouth'},
+            {c:'gp',n:'Guadeloupe',h:'Territory Prancis dengan Basse-Terre'},
+            {c:'mq',n:'Martinique',h:'Territory Prancis dengan Fort-de-France'},
+            {c:'aw',n:'Aruba',h:'Negara dengan Oranjestad dan pantai'},
+            {c:'cw',n:'Curacao',h:'Negara dengan Willemstad dan warna'},
+            {c:'sx',n:'Sint Maarten',h:'Negara dengan Philipsburg'},
+            {c:'fk',n:'Kep. Falkland',h:'Territory dengan Stanley'},
+            {c:'gs',n:'Georgia Selatan',h:'Territory dengan King Edward Point'},
+            {c:'sh',n:'St. Helena',h:'Territory dengan Jamestown'},
+            {c:'io',n:'Wilayah Samudra Hindia',h:'Territory Inggris'},
+            {c:'tf',n:'Wilayah Selatan Prancis',h:'Territory Prancis'},
+            {c:'bv',n:'Kep. Bouvet',h:'Territory Norwegia'},
+            {c:'aq',n:'Antartika',h:'Benua es dengan penelitian'},
+            {c:'ps',n:'Palestina',h:'Negara dengan Ramallah dan sejarah'},
+            {c:'xk',n:'Kosovo',h:'Negara dengan Pristina dan sejarah'}
+        ];
 
-    const translations = {
-        id: { hint: "PETUNJUK", skip: "LEWATI", cont: "BENUA", cap: "IBU KOTA", loc: "LOKASI", near: "Bertetangga dengan", area: "Berada di wilayah", unknown: "Tidak diketahui", correct: "BENAR!", wrong: "SALAH!", finish: "SEMUA TERJAWAB!" },
-        en: { hint: "HINT", skip: "SKIP", cont: "CONTINENT", cap: "CAPITAL", loc: "LOCATION", near: "Bordering with", area: "Located in", unknown: "Unknown", correct: "CORRECT!", wrong: "WRONG!", finish: "ALL FINISHED!" }
-    };
+        let currentQuestion = 0;
+        let score = 0;
+        let currentCountry = null;
+        let isAnswered = false;
+        let hintUsed = false;
+        let availableCountries = [...countries];
+        let isLoading = false;
 
-    function setLang(lang) {
-        currentLang = lang;
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + lang).classList.add('active');
-        
-        document.getElementById('txt-hint').innerText = translations[lang].hint;
-        document.getElementById('txt-skip').innerText = translations[lang].skip;
-        
-        // Update 100% Akurat: Nama negara di pilihan dan petunjuk langsung berubah
-        if(currentChoices.length > 0) renderOptions();
-        updateHintTexts();
-    }
+        const flagImg = document.getElementById('flag-image');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const feedbackText = document.getElementById('feedback-text');
+        const hintBtn = document.getElementById('hint-btn');
+        const hintDisplay = document.getElementById('hint-display');
+        const hintText = document.getElementById('hint-text');
+        const hintBtnText = document.getElementById('hint-btn-text');
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
 
-    async function initGame() {
-        try {
-            const res = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,cca3,translations,continents,capital,subregion,borders');
-            const data = await res.json();
-            allCountries = data.map(c => {
-                const names = { id: c.translations.idn?.common || c.name.common, en: c.name.common };
-                countryLookup[c.cca3] = names;
-                return {
-                    names, code: c.cca2.toLowerCase(), cont: c.continents[0],
-                    cap: c.capital?.[0] || translations[currentLang].unknown,
-                    sub: c.subregion || "Global", borders: c.borders || []
-                };
+        function loadQuestion() {
+            if (isLoading) return;
+            isLoading = true;
+            
+            if (availableCountries.length === 0) {
+                availableCountries = [...countries];
+            }
+            
+            isAnswered = false;
+            hintUsed = false;
+            nextBtn.classList.add('hidden');
+            feedbackText.style.opacity = '0';
+            hintDisplay.classList.add('hidden');
+            hintBtn.disabled = false;
+            hintBtnText.innerText = 'Lihat Petunjuk';
+            hintBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            optionsContainer.innerHTML = '';
+            
+            // Reset flag image
+            flagImg.classList.remove('loaded');
+            flagImg.style.opacity = '0';
+            
+            currentCountry = availableCountries[Math.floor(Math.random() * availableCountries.length)];
+            
+            let options = [currentCountry];
+            let wrongOptions = countries.filter(c => c.c !== currentCountry.c);
+            wrongOptions = shuffle(wrongOptions).slice(0, 3);
+            options = options.concat(wrongOptions);
+            options = shuffle(options);
+            // Load image dengan proper handling
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                flagImg.src = this.src;
+                flagImg.classList.add('loaded');
+                flagImg.style.opacity = '1';
+                isLoading = false;
+            };
+            tempImg.onerror = function() {
+                console.error('Failed to load flag:', currentCountry.c);
+                isLoading = false;
+            };
+            tempImg.src = `https://flagcdn.com/w640/${currentCountry.c}.png`;
+            
+            options.forEach((country, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn py-4 px-6 rounded-xl text-white font-medium text-left fade-in';
+                btn.style.animationDelay = `${index * 0.1}s`;
+                btn.innerHTML = `
+                    <span class="inline-block w-7 h-7 rounded-lg bg-white/10 text-center leading-7 mr-3 text-sm font-semibold">${String.fromCharCode(65 + index)}</span>
+                    ${country.n}
+                `;
+                btn.onclick = () => checkAnswer(btn, country);
+                optionsContainer.appendChild(btn);
             });
-            availableCountries = [...allCountries];
-            document.getElementById('best').innerText = localStorage.getItem('bestScore') || 0;
-            loadQ();
-        } catch (e) { toast("Error Loading Data!", "var(--red)"); }
-    }
-
-    function loadQ() {
-        if (availableCountries.length === 0) {
-            toast(translations[currentLang].finish, "var(--accent)");
-            availableCountries = [...allCountries]; 
         }
-        isAnswering = false;
-        
-        // Animasi soal baru
-        const card = document.getElementById('game-card');
-        card.classList.remove('new-q');
-        void card.offsetWidth; 
-        card.classList.add('new-q');
-
-        const index = Math.floor(Math.random() * availableCountries.length);
-        cur = availableCountries[index];
-        cur.originalIndex = index;
-
-        document.getElementById('q-img').style.display = 'none';
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('q-img').src = `https://flagcdn.com/w640/${cur.code}.png`;
-        document.getElementById('q-img').onload = () => {
-            document.getElementById('q-img').style.display = 'block';
-            document.getElementById('loader').style.display = 'none';
-        };
-
-        generateChoices();
-        renderOptions();
-        document.querySelectorAll('.hint-text').forEach(h => h.style.display = 'none');
-    }
-
-    function generateChoices() {
-        let choices = [cur];
-        while (choices.length < 4) {
-            let rand = allCountries[Math.floor(Math.random() * allCountries.length)];
-            if (!choices.find(c => c.code === rand.code)) choices.push(rand);
+        function checkAnswer(btn, selected) {
+            if (isAnswered || isLoading) return;
+            isAnswered = true;
+            hintBtn.disabled = true;
+            hintBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            const buttons = optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (selected.c === currentCountry.c) {
+                btn.classList.add('correct-answer');
+                const points = hintUsed ? 5 : 10;
+                score += points;
+                feedbackText.innerHTML = '<span class="text-green-400"><i class="fas fa-check-circle mr-2"></i>Benar! +' + points + ' poin</span>';
+                
+                // Remove from available countries jika benar
+                availableCountries = availableCountries.filter(c => c.c !== currentCountry.c);
+                
+                // Auto next setelah 1.5 detik
+                setTimeout(() => {
+                    currentQuestion++;
+                    loadQuestion();
+                }, 1500);
+                } else {
+                btn.classList.add('wrong-answer');
+                buttons.forEach(b => {
+                    if (b.innerText.includes(currentCountry.n)) {
+                        b.classList.add('correct-answer');
+                    }
+                });
+                feedbackText.innerHTML = '<span class="text-red-400"><i class="fas fa-times-circle mr-2"></i>Salah! Jawabannya: ' + currentCountry.n + '</span>';
+                
+                // Tetap di available countries jika salah (tidak dihapus)
+                // Auto next setelah 2 detik
+                setTimeout(() => {
+                    currentQuestion++;
+                    loadQuestion();
+                }, 2000);
+            }
+            
+            feedbackText.style.opacity = '1';
         }
-        currentChoices = choices.sort(() => Math.random() - 0.5);
-    }
-
-    function renderOptions() {
-        const box = document.getElementById('options'); 
-        box.innerHTML = '';
-        currentChoices.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = c.names[currentLang];
-            btn.onclick = () => handleChoice(btn, c.code);
-            box.appendChild(btn);
+        hintBtn.addEventListener('click', () => {
+            if (hintUsed || isAnswered || isLoading) return;
+            hintUsed = true;
+            hintText.innerText = currentCountry.h;
+            hintDisplay.classList.remove('hidden');
+            hintBtnText.innerText = 'Petunjuk Sudah Ditampilkan';
+            hintBtn.disabled = true;
+            hintBtn.classList.add('opacity-50', 'cursor-not-allowed');
         });
-    }
 
-    function handleChoice(btn, code) {
-        if (isAnswering) return;
-        isAnswering = true;
-        if (code === cur.code) {
-            btn.classList.add('correct');
-            score += 10; document.getElementById('score').innerText = score;
-            if(score > (localStorage.getItem('bestScore')||0)) localStorage.setItem('bestScore', score);
-            toast("✅ " + translations[currentLang].correct, "var(--green)");
-            availableCountries.splice(cur.originalIndex, 1);
-            setTimeout(loadQ, 1000);
-        } else {
-            btn.classList.add('wrong');
-            toast("❌ " + translations[currentLang].wrong, "var(--red)");
-            Array.from(document.querySelectorAll('.opt-btn')).forEach(b => {
-                const found = currentChoices.find(x => x.names[currentLang] === b.innerText);
-                if(found && found.code === cur.code) b.classList.add('correct');
-            });
-            setTimeout(loadQ, 1500);
-        }
-    }
+        nextBtn.addEventListener('click', () => {
+            if (!isLoading) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        });
 
-    function updateHintTexts() {
-        const h1 = document.getElementById('h-continent'), h2 = document.getElementById('h-capital'), h3 = document.getElementById('h-loc');
-        const t = translations[currentLang];
-        if(h1.style.display === 'block') h1.innerHTML = `🌍 <b>${t.cont}:</b> ${translateCont(cur.cont)}`;
-        if(h2.style.display === 'block') h2.innerHTML = `🏛️ <b>${t.cap}:</b> ${cur.cap}`;
-        if(h3.style.display === 'block') {
-            let neighborStr = cur.borders.map(b => countryLookup[b]?.[currentLang]).filter(n => n).slice(0, 2).join(" & ");
-            h3.innerHTML = `📍 <b>${t.loc}:</b> ${t.area} ${cur.sub}${neighborStr ? ", " + t.near + " " + neighborStr : ""}`;
-        }
-    }
-
-    function toggleHint() {
-        const h1 = document.getElementById('h-continent'), h2 = document.getElementById('h-capital'), h3 = document.getElementById('h-loc');
-        if (h1.style.display === 'none') { h1.style.display = 'block'; }
-        else if (h2.style.display === 'none') { h2.style.display = 'block'; }
-        else if (h3.style.display === 'none') { h3.style.display = 'block'; }
-        updateHintTexts();
-    }
-
-    function translateCont(c) {
-        if(currentLang === 'en') return c;
-        const m = {"Asia":"Asia","Europe":"Eropa","Africa":"Afrika","Oceania":"Oseania","North America":"Amerika Utara","South America":"Amerika Selatan"};
-        return m[c] || c;
-    }
-
-    function toast(m, c) {
-        const p = document.getElementById('pop'); p.innerHTML = m; p.style.background = c;
-        p.style.transform = "translateX(-50%) translateY(0)";
-        setTimeout(() => p.style.transform = "translateX(-50%) translateY(-150px)", 1500);
-    }
-
-    initGame();
-</script>
+        // Initial load
+        window.addEventListener('load', () => {
+            loadQuestion();
+        });
+    </script>
 </body>
 </html>
